@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+    <title>insta485</title>
+  </head>
+
+  <body>
+    <div class="header">
+      <a href="{{ url_for('show_index') }}"><img id="logo" alt='logo' src="/static/images/logo.png"></a>
+      <div id="vertical"></div>
+      <h1 id="instaHeader"><a href="{{ url_for('show_index') }}">Insta485</a></h1>
+
+      <h2 id="loginHeader"><a href="{{ url_for('show_login') }}">login</a></h2>
+    </div>
+
+    <hr id="headerRule" />
+
+    <div class="loginForm">
+        <form action="{{ url_for('accounts') }}?target={{ url_for('show_index') }}" method="post" enctype="multipart/form-data">
+            <div class="inputFields">
+                <input placeholder="username" class="formInput" type="text" name="username" required/>
+                <input placeholder="password" class="formInput" type="password" name="password" required/>
+                <input type="submit" class="formInput" value="login"/>
+                <input type="hidden" name="operation" value="login"/>
+            </div>
+        </form>
+        <h3 id="signUpText">Don't have an account?<a href="{{ url_for('show_create') }}"><b> Sign up</b></a></h3>
+
+    </div>
+  </body>
+</html>

@@ -3,17 +3,24 @@ import flask
 from flask import (
     session, request
 )
+from flask_jwt_extended import (
+    create_access_token, get_jwt_identity,
+    jwt_required, JWTManager)
 import random
 import chachapp
 
+jwt = JWTManager(chachapp.app)
 
 @chachapp.app.route('/api/v1/', methods=["GET"])
+@jwt_required()
 def get_v1():
     """Return a list of available resources."""
     context = {
         "posts": "/api/v1/p/",
         "url": "/api/v1/"
     }
+    user = get_jwt_identity()
+    print(user)
     return flask.jsonify(**context)
 
 @chachapp.app.route('/api/v1/inrotation/', methods=["GET"])

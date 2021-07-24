@@ -16,13 +16,14 @@ class Home extends React.Component {
         this.handleClick = this.handleClick.bind(this);
     }
     componentDidMount() {
-        const { url } = "/api/v1/roll/"
+        const { url } = "/api/v1/roll/";
 
-        fetch(url)
+        fetch(url, { credentials: 'same-origin'
+          })
             .then((response) => {
                 if (!response.ok) throw Error(response.statusText);
-                
-                return response.json();
+
+                return response;
             })
             .then((data) => {
                 this.setState({
@@ -53,8 +54,6 @@ class Home extends React.Component {
                 });
             })
             .catch((error) => console.log(error));
-        
-
     }
 
     render(){

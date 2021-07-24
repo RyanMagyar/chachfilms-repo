@@ -12,7 +12,6 @@ import chachapp
 jwt = JWTManager(chachapp.app)
 
 @chachapp.app.route('/api/v1/', methods=["GET"])
-@jwt_required()
 def get_v1():
     """Return a list of available resources."""
     context = {
@@ -55,10 +54,12 @@ def get_roll(picked_last):
 
 
 @chachapp.app.route('/api/v1/m/<string:movieid>/setstate/', methods=["PUT"])
+@jwt_required()
 def set_movie_state(movieid):
     """Set movieid's state to state arg."""
     validStates = ['watched', 'inrotation', 'ondeck']
     newState = request.args.get('state')
+    user = get_jwt_identity()
     
     if newState not in validStates:
         response = {'state': newState,
@@ -83,6 +84,7 @@ def set_movie_state(movieid):
     return response, 200
 
 @chachapp.app.route('/api/v1/m/<string:movieid>/delete/', methods=["DELETE"])
+@jwt_required()
 def delete_movie(movieid):
     """Delete movie with movieid."""
     cur = chachapp.model.get_db()

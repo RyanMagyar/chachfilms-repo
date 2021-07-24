@@ -10,7 +10,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 class Movie extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { state: '', showWatched: false, fade: false, showDeleted: false,
+        const tokenString = localStorage.getItem('token');
+        const userToken = JSON.parse(tokenString);
+        this.state = { state: '', showWatched: false, fade: false, showDeleted: false, isLoggedIn: userToken,
         }
         this.handleDeleteClick = this.handleDeleteClick.bind(this);
         this.handleWatchedClick = this.handleWatchedClick.bind(this);
@@ -33,6 +35,7 @@ class Movie extends React.Component {
         fetch(setStateUrl, {
             credentials: 'same-origin',
             method: 'DELETE',
+            headers: {"authorization": `Bearer ${isLoggedIn}`},
         })
             .then((response) => {
                 if (!response.ok) {
@@ -47,10 +50,13 @@ class Movie extends React.Component {
     handleWatchedClick(){
         const { movieid } = this.props;
         const setStateUrl = `/api/v1/m/${movieid}/setstate/?state=watched`;
+        const {isLoggedIn} = this.state;
+
       
         fetch(setStateUrl, {
             credentials: 'same-origin',
             method: 'PUT',
+            headers: {"authorization": `Bearer ${isLoggedIn}`},
         })
             .then((response) => {
                 if (!response.ok) {
@@ -77,6 +83,7 @@ class Movie extends React.Component {
         const { showWatched } = this.state;
         const { showDeleted } = this.state;
         const {fade} = this.state
+        const { isLoggedIn } = this.state;
 
         if(state == 'watched' || state =='deleted'){
             return(
@@ -93,8 +100,8 @@ class Movie extends React.Component {
                 <span className="movieInfo">Directed by: {director} ({year})</span><br></br>
                 <span className="movieInfo">IMDB Rating: {imdbrating}</span><br></br>
                 <div className="movieButtons">
-                    <Button variant="danger" className="deleteButton" onClick={ () => this.setState({showDeleted: true})}>Delete</Button>
-                    <Button className="watchedButton"onClick={ () => this.setState({showWatched: true})}>Watched</Button>
+                   {isLoggedIn && <Button variant="danger" className="deleteButton" onClick={ () => this.setState({showDeleted: true})}>Delete</Button>}
+                    {isLoggedIn && <Button className="watchedButton"onClick={ () => this.setState({showWatched: true})}>Watched</Button>}
                 </div>
                 <Modal centered contentClassName='watchedModal' show={showWatched} animation={false} onHide={() => this.setState({showWatched: false})}>
                     <Modal.Header bsPrefix="modalHeader" closeButton>

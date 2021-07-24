@@ -10,8 +10,10 @@ class Home extends React.Component {
 
     constructor(props) {
         super(props);
+        const tokenString = localStorage.getItem('token');
+        const userToken = JSON.parse(tokenString);
         this.state = {
-            lastWatched: 'Picked Last', rolledMovie: 'Please select last person to pick!'
+            lastWatched: 'Picked Last', rolledMovie: 'Please select last person to pick!', isLoggedIn: userToken,
         };
         this.handleClick = this.handleClick.bind(this);
     }
@@ -61,6 +63,7 @@ class Home extends React.Component {
         const { lastWatched } = this.state;
         const { rolledMovie } = this.state;
 
+
         return (
             <div>
                 <div className="rollDiv">
@@ -76,7 +79,6 @@ class Home extends React.Component {
                     <h1 className="rolledMovie">{rolledMovie}</h1>
 
                     <Button className="rollButton" size="lg" onClick={this.handleClick}> Roll!</Button>
-
                     <hr></hr>
                     
                 </div>

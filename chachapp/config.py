@@ -14,7 +14,8 @@ class Config(object):
     APPLICATION_ROOT = '/'
 
     # Secret key for encrypting cookies
-    SECRET_KEY = b'\n\x9dvyk\x90\x11Z/\xba#\xce~mG,\x1d-\x97\xe3Q\x01\xc4\x1f'
+    JWT_SECRET_KEY = b'\n\x9dvyk\x90\x11Z/\xba#\xce~mG,\x1d-\x97\xe3Q\x01\xc4\x1f'
+    JWT_ACCESS_TOKEN_EXPIRES = False
     SESSION_COOKIE_NAME = 'login'
 
     # File Upload to var/uploads/

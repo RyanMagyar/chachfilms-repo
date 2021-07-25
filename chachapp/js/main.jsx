@@ -20,8 +20,6 @@ class Main extends React.Component{
                 <Route exact path="/addmovie/" component={Movies}/>
                 <Route exact path="/login/" component={Login}/>
                 <Route exact path="/" component={Home}/>
-
-
             </div>
         );
     }

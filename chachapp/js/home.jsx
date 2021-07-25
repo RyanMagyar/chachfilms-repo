@@ -14,9 +14,31 @@ class Home extends React.Component {
         const userToken = JSON.parse(tokenString);
         this.state = {
             lastWatched: 'Picked Last', rolledMovie: 'Please select last person to pick!', isLoggedIn: userToken,
+            toggleRerender: false, numInRotation: {'Ryan': 0,
+            'Justin': 0, 'Marcus': 0, 'Jon': 0}
         };
         this.handleClick = this.handleClick.bind(this);
+        this.rerenderParent = this.rerenderParent.bind(this);
+        this.getNumInRotation = this.getNumInRotation.bind(this);
+
     }
+
+    rerenderParent() {
+        console.log('rerender');
+        this.setState({toggleRerender: !this.state.toggleRerender});
+    }
+
+    getNumInRotation(movies) {
+        const { numInRotation } = this.state;
+        for(var person in numInRotation){
+            numInRotation[person] = 0;
+        }
+        movies.forEach(movie => numInRotation[movie.suggestedby] = numInRotation[movie.suggestedby] + 1)
+        
+        this.setState({numInRotation: numInRotation});
+        console.log(this.state.numInRotation);
+    }
+
     componentDidMount() {
         const { url } = "/api/v1/roll/";
 
@@ -62,12 +84,12 @@ class Home extends React.Component {
 
         const { lastWatched } = this.state;
         const { rolledMovie } = this.state;
-
+        const { toggleRerender } = this.state;
 
         return (
             <div>
                 <div className="rollDiv">
-                    <h1 className="rollHeading">Roll for Movie</h1>
+                    {toggleRerender && <h1 className="rollHeading">Roll for Movie</h1>}
                     
                     <DropdownButton bsPrefix="lastSelectedButton" id="dropdown-basic-button" title={lastWatched}>
                         <Dropdown.Item className="dropdownItem" onClick={() => this.setState({ lastWatched: "Ryan"})}>Ryan</Dropdown.Item>
@@ -85,7 +107,18 @@ class Home extends React.Component {
                 
                 
                 <h1 className="moviesHeading">Movies in Rotation</h1>
-                <Feed url="/api/v1/inrotation/"/>
+                        
+                <Feed url="/api/v1/inrotation/" 
+                getNumInRotation={this.getNumInRotation}
+                numInRotation={this.state.numInRotation}
+                toggleRerender={this.state.toggleRerender}
+                rerenderParent={this.rerenderParent}/>
+                <h1 className="moviesHeading">Movies on Deck</h1>
+                <Feed url="/api/v1/ondeck/" 
+                getNumInRotation={this.getNumInRotation}
+                numInRotation={this.state.numInRotation}
+                toggleRerender={this.state.toggleRerender} 
+                rerenderParent={this.rerenderParent}/>
             </div>
             
         );

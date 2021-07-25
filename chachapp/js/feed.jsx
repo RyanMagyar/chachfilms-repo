@@ -6,12 +6,39 @@ class Feed extends React.Component {
 
     constructor(props){
         super(props);
-        this.state = { movies: [] };
+        this.state = { movies: [], rerender: false};
+
+    this.getCounts = this.getCounts.bind(this);
+
     }
 
-    componentDidMount() {
+    
+
+    componentDidUpdate(previousProps) {
         const { url } = this.props;
 
+        if(previousProps.toggleRerender != this.props.toggleRerender){
+            fetch(url)
+            .then((response) => {
+                if (!response.ok) throw Error(response.statusText);
+                
+                return response.json();
+            })
+            .then((data) => {
+                this.setState({
+                    movies: data.movies,
+                });
+                if(url == "/api/v1/inrotation/") this.props.getNumInRotation(this.state.movies);
+            })
+            .catch((error) => console.log(error));
+        }
+        
+    }
+
+    componentDidMount(){
+        const { url } = this.props;
+       
+        console.log(url);
         fetch(url)
             .then((response) => {
                 if (!response.ok) throw Error(response.statusText);
@@ -22,12 +49,29 @@ class Feed extends React.Component {
                 this.setState({
                     movies: data.movies,
                 });
+                if(url == "/api/v1/inrotation/") this.props.getNumInRotation(this.state.movies);
             })
             .catch((error) => console.log(error));
     }
 
+    getCounts(){
+        const { numInRotation } = this.state;
+        const { movies } = this.state;
+        for(var person in numInRotation){
+            numInRotation[person] = 0;
+        }
+        movies.forEach(movie => numInRotation[movie.suggestedby] = numInRotation[movie.suggestedby] + 1)
+        
+        this.setState({numInRotation: numInRotation});
+        console.log(this.state.numInRotation);
+
+    }
+
     render() {
         const { movies } = this.state;
+        const { numInRotation } = this.state;
+        const { url } = this.props;
+        console.log(this.state.numInRotation);
 
         return (
             <div className="feed">
@@ -40,11 +84,10 @@ class Feed extends React.Component {
                         title={movie.title}
                         cover={movie.filename}
                         director={movie.director}
-                        state={movie.state}
+                        movieState={movie.state}
                         movieid={movie.movieid}
-
-
-
+                        rerenderParent={this.props.rerenderParent}
+                        numInRotation={this.props.numInRotation}
                     />
                 ))}
             </div>

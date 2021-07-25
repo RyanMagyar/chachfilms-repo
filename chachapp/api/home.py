@@ -23,11 +23,28 @@ def get_v1():
     return flask.jsonify(**context)
 
 @chachapp.app.route('/api/v1/inrotation/', methods=["GET"])
-def get_on_deck():
+def get_in_rotation():
     """Return movies inrotation."""
     cur = chachapp.model.get_db()
     cur.execute("""SELECT * FROM movies m
                 WHERE m.state='inrotation' 
+                ORDER BY m.suggestedby""")
+    movies = cur.fetchall()
+    for movie in movies:
+        movie['imdbrating'] =  str(movie['imdbrating'])
+        movie['filename'] = "/uploads/{}".format(movie['filename'])
+    
+    context = {
+        "movies": movies,
+    }
+    return flask.jsonify(**context)
+
+@chachapp.app.route('/api/v1/ondeck/', methods=["GET"])
+def get_on_deck():
+    """Return movies inrotation."""
+    cur = chachapp.model.get_db()
+    cur.execute("""SELECT * FROM movies m
+                WHERE m.state='ondeck' 
                 ORDER BY m.suggestedby""")
     movies = cur.fetchall()
     for movie in movies:

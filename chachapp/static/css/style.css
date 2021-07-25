@@ -83,6 +83,17 @@ body {
     font-size: 14px;
 }
 
+.onDeckButton {
+    /*margin-top: auto;
+    margin-right: auto;*/
+    
+    order: 2;
+    width: 85px;
+    height: 30px;
+    font-size: 14px;
+    text-align: center;
+}
+
 .modalHeader {
     display: flex;
     justify-content: space-between;
@@ -143,7 +154,7 @@ body {
 }
 
 .deleteButton {
-    order: 2;
+    order: 3;
     width: 75px;
     height: 30px;
     font-size: 14px;

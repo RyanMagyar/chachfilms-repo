@@ -17,9 +17,6 @@ def login():
     request_data = request.get_json()
     username = request_data['username']
     password = request_data['password']
-    print(username)
-    print(password)
-    
 
     if username == '' or password == '':
         response = {'message': 'Username or password cannot be blank.', 

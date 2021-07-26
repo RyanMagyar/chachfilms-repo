@@ -8,8 +8,6 @@ class Feed extends React.Component {
         super(props);
         this.state = { movies: [], rerender: false};
 
-    this.getCounts = this.getCounts.bind(this);
-
     }
 
     
@@ -38,7 +36,6 @@ class Feed extends React.Component {
     componentDidMount(){
         const { url } = this.props;
        
-        console.log(url);
         fetch(url)
             .then((response) => {
                 if (!response.ok) throw Error(response.statusText);
@@ -54,24 +51,10 @@ class Feed extends React.Component {
             .catch((error) => console.log(error));
     }
 
-    getCounts(){
-        const { numInRotation } = this.state;
-        const { movies } = this.state;
-        for(var person in numInRotation){
-            numInRotation[person] = 0;
-        }
-        movies.forEach(movie => numInRotation[movie.suggestedby] = numInRotation[movie.suggestedby] + 1)
-        
-        this.setState({numInRotation: numInRotation});
-        console.log(this.state.numInRotation);
-
-    }
-
     render() {
         const { movies } = this.state;
         const { numInRotation } = this.state;
         const { url } = this.props;
-        console.log(this.state.numInRotation);
 
         return (
             <div className="feed">

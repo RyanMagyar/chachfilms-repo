@@ -19,11 +19,7 @@ class Movie extends React.Component {
          showOnDeck: false, showWaring: false,
         }
         this.handleDeleteClick = this.handleDeleteClick.bind(this);
-        this.handleWatchedClick = this.handleWatchedClick.bind(this);
-        this.handleOnDeckClick = this.handleOnDeckClick.bind(this);
-        this.handleInRotationClick = this.handleInRotationClick.bind(this);
-        
-
+        this.handleWatchedClick = this.handleStateButtonClick.bind(this);
     }
 
 
@@ -57,11 +53,11 @@ class Movie extends React.Component {
         
     }
 
-    handleWatchedClick(){
+    handleStateButtonClick(newState){
         const { movieid } = this.props;
-        const setStateUrl = `/api/v1/m/${movieid}/setstate/?state=watched`;
+        const setStateUrl = `/api/v1/m/${movieid}/setstate/?state=${newState}`;
         const {isLoggedIn} = this.state;
-
+        console.log(newState);
       
         fetch(setStateUrl, {
             credentials: 'same-origin',
@@ -72,57 +68,11 @@ class Movie extends React.Component {
                 if (!response.ok) {
                     throw Error(response.statusText);
                 } else {
-                    this.setState({currentState: "watched"});
+                    this.setState({currentState: newState});
                 }
             })
             .catch((error) => console.log(error))
         this.props.rerenderParent();
-    }
-
-    handleOnDeckClick(){
-        const { movieid } = this.props;
-        const setStateUrl = `/api/v1/m/${movieid}/setstate/?state=ondeck`;
-        const {isLoggedIn} = this.state;
-        
-      
-        fetch(setStateUrl, {
-            credentials: 'same-origin',
-            method: 'PUT',
-            headers: {"authorization": `Bearer ${isLoggedIn}`},
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw Error(response.statusText);
-                } else {
-                    this.setState({currentState: "ondeck"});
-                }
-            })
-            .catch((error) => console.log(error))
-        this.props.rerenderParent();
-
-    }
-
-    handleInRotationClick(){
-        const { movieid } = this.props;
-        const setStateUrl = `/api/v1/m/${movieid}/setstate/?state=inrotation`;
-        const {isLoggedIn} = this.state;
-        
-      
-        fetch(setStateUrl, {
-            credentials: 'same-origin',
-            method: 'PUT',
-            headers: {"authorization": `Bearer ${isLoggedIn}`},
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw Error(response.statusText);
-                } else {
-                    this.setState({currentState: "inrotation"});
-                }
-            })
-            .catch((error) => console.log(error))
-        this.props.rerenderParent();
-
     }
     
 
@@ -163,8 +113,6 @@ class Movie extends React.Component {
                     {isLoggedIn && <Button variant="danger" className="deleteButton" onClick={ () => this.setState({showDeleted: true})}>Delete</Button>}
                     {(isLoggedIn && currentState == 'ondeck') && <Button variant="success" className="onDeckButton"onClick={ () => {
                         const numInRotation = this.props.numInRotation;
-                        console.log(numInRotation);
-
                         if(numInRotation[suggestedby] == 2){
                             this.setState({showWarning: true})} else {
                                 this.setState({showInRotation: true})
@@ -183,7 +131,7 @@ class Movie extends React.Component {
                     <span className="modalBodyText">Are you sure you want to mark this movie as watched?</span>
                     </Modal.Body>
                     <Modal.Footer bsPrefix="modalFooter">
-                        <Button className="modalButton" variant="success" onClick={this.handleWatchedClick}>
+                        <Button className="modalButton" variant="success" onClick={this.handleStateButtonClick.bind(this, 'watched')}>
                             Confirm
                         </Button>
                         <Button className="modalButton" variant="secondary" onClick={ () => this.setState({showWatched: false})}>
@@ -201,7 +149,7 @@ class Movie extends React.Component {
                     <span className="modalBodyText">Are you sure you want to mark this movie as on deck?</span>
                     </Modal.Body>
                     <Modal.Footer bsPrefix="modalFooter">
-                        <Button className="modalButton" variant="success" onClick={this.handleOnDeckClick}>
+                        <Button className="modalButton" variant="success" onClick={this.handleStateButtonClick.bind(this, 'ondeck')}>
                             Confirm
                         </Button>
                         <Button className="modalButton" variant="secondary" onClick={ () => this.setState({showOnDeck: false})}>
@@ -235,7 +183,7 @@ class Movie extends React.Component {
                     <span className="modalBodyText">Are you sure you want to put this movie in rotation?</span>
                     </Modal.Body>
                     <Modal.Footer bsPrefix="modalFooter">
-                        <Button className="modalButton" variant="success" onClick={this.handleInRotationClick}>
+                        <Button className="modalButton" variant="success" onClick={this.handleStateButtonClick.bind(this, 'inrotation')}>
                             Confirm
                         </Button>
                         <Button className="modalButton" variant="secondary" onClick={ () => this.setState({showInRotation: false})}>

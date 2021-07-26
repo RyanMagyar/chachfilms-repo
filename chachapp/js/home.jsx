@@ -24,7 +24,6 @@ class Home extends React.Component {
     }
 
     rerenderParent() {
-        console.log('rerender');
         this.setState({toggleRerender: !this.state.toggleRerender});
     }
 
@@ -36,7 +35,6 @@ class Home extends React.Component {
         movies.forEach(movie => numInRotation[movie.suggestedby] = numInRotation[movie.suggestedby] + 1)
         
         this.setState({numInRotation: numInRotation});
-        console.log(this.state.numInRotation);
     }
 
     componentDidMount() {

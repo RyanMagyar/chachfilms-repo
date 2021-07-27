@@ -10,12 +10,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 class Movie extends React.Component {
     constructor(props) {
         super(props);
-        const tokenString = localStorage.getItem('token');
-        const userToken = JSON.parse(tokenString);
         const movieState = this.props;
         const {numInRotation} = this.props;
         this.state = { currentState: movieState, showWatched: false, fade: false,
-         showDeleted: false, isLoggedIn: userToken, showInRotation: false,
+         showDeleted: false, isLoggedIn: this.props.isLoggedIn, showInRotation: false,
          showOnDeck: false, showWaring: false,
         }
         this.handleDeleteClick = this.handleDeleteClick.bind(this);
@@ -41,38 +39,45 @@ class Movie extends React.Component {
             method: 'DELETE',
             headers: {"authorization": `Bearer ${isLoggedIn}`},
         })
-            .then((response) => {
-                if (!response.ok) {
-                    throw Error(response.statusText);
+        .then((response) => {
+             if (!response.ok) {
+             throw Error(response.statusText);
                 } else {
-                    this.setState({currentState: "deleted"});
-                }
-            })
-            .catch((error) => console.log(error))
-        this.props.rerenderParent();
+               this.setState({currentState: "deleted"});
+               this.props.rerenderParent();
+
+            }
+        })
+        .catch((error) => console.log(error))
         
+    }
+
+    componentDidUpdate(previousProps){
+        if(previousProps.isLoggedIn != this.props.isLoggedIn){
+            this.setState({isLoggedIn: this.props.isLoggedIn});
+        }
     }
 
     handleStateButtonClick(newState){
         const { movieid } = this.props;
         const setStateUrl = `/api/v1/m/${movieid}/setstate/?state=${newState}`;
         const {isLoggedIn} = this.state;
-        console.log(newState);
       
         fetch(setStateUrl, {
             credentials: 'same-origin',
             method: 'PUT',
             headers: {"authorization": `Bearer ${isLoggedIn}`},
         })
-            .then((response) => {
-                if (!response.ok) {
-                    throw Error(response.statusText);
-                } else {
-                    this.setState({currentState: newState});
-                }
-            })
-            .catch((error) => console.log(error))
-        this.props.rerenderParent();
+        .then((response) => {
+            if (!response.ok) {
+                 throw Error(response.statusText);
+            } else {
+                this.setState({currentState: newState});
+                this.props.rerenderParent();
+
+            }
+        })
+        .catch((error) => console.log(error))
     }
     
 

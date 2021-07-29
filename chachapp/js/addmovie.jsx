@@ -187,7 +187,7 @@ class AddMovie extends React.Component{
 
                 <Modal backdrop={backdrop} centered contentClassName='watchedModal' show={showAddMovie} animation={false} onHide={() => this.setState({showAddMovie: false})}>
                     {filmLoading ?
-                        <img  src={FilmLoader} className={`search-loading ${filmLoading ? 'show' : 'hide' }`}  alt="loader"/>
+                        <img  src={FilmLoader} className={`film-loading ${filmLoading ? 'show' : 'hide' }`}  alt="loader"/>
                     :<div className="modal-content watchedModal">
                     <Modal.Header bsPrefix="modalHeader" closeButton>
                         <div className="modalHeaderLeft"></div>

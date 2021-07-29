@@ -148,7 +148,10 @@ body {
     text-align: center;
     
 }
-
+.film-loading{
+    width:550px;
+    height: 200px;
+}
 .watchedModal {
     width:550px;
     height: 200px;

@@ -142,6 +142,7 @@ def add_movie(user):
     
     ia = IMDb()
     movie = ia.get_movie(new_movie['imdbId'].replace('tt',''))
+    
     url = movie['full-size cover url']
     filename = movie['title'].replace(' ', '') + str(movie['year']) + 'coverphoto.jpg'
     response = requests.get(url, stream=True)

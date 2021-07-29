@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Textfit } from 'react-textfit';
-import { Button } from "react-bootstrap";
+import { Button, ButtonGroup, ToggleButton } from "react-bootstrap";
 import { Modal } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -14,7 +14,7 @@ class Movie extends React.Component {
         const {numInRotation} = this.props;
         this.state = { currentState: movieState, showWatched: false, fade: false,
          showDeleted: false, isLoggedIn: this.props.isLoggedIn, showInRotation: false,
-         showOnDeck: false, showWaring: false,
+         showOnDeck: false, showWaring: false, deleteChecked: false,
         }
         this.handleDeleteClick = this.handleDeleteClick.bind(this);
         this.handleWatchedClick = this.handleStateButtonClick.bind(this);
@@ -30,7 +30,7 @@ class Movie extends React.Component {
 
     handleDeleteClick(){
         const { movieid } = this.props;
-        const setStateUrl = `/api/v1/m/${movieid}/delete/`;
+        const setStateUrl = `/api/v1/m/${movieid}/delete/?deleteChecked=${this.state.deleteChecked}`;
         const {isLoggedIn} = this.state;
 
       
@@ -43,7 +43,8 @@ class Movie extends React.Component {
              if (!response.ok) {
              throw Error(response.statusText);
                 } else {
-               this.setState({currentState: "deleted"});
+               this.setState({currentState: "deleted",
+                              deleteChecked: false,});
                this.props.rerenderParent();
 
             }
@@ -197,20 +198,24 @@ class Movie extends React.Component {
                     </Modal.Footer>
                 </Modal>
 
-                <Modal centered contentClassName='watchedModal' show={showDeleted} animation={false} onHide={() => this.setState({showDeleted: false})}>
+                <Modal centered contentClassName='deletedModal' show={showDeleted} animation={false} onHide={() => this.setState({deleteChecked: false, showDeleted: false})}>
                     <Modal.Header bsPrefix="modalHeader" closeButton>
                         <div className="modalHeaderLeft"></div>
                         <Modal.Title bsPrefix="modalTitle">Are You Sure?</Modal.Title>
                     </Modal.Header>
                     <Modal.Body bsPrefix="modalBody"> 
-                    <span className="modalBodyText">Are you sure you want to delete this movie?</span><br></br>
-                    <span>This action cannot be undone.</span>
+                        <span className="modalBodyText">Are you sure you want to delete this movie?</span><br></br>
+                        <span>This action cannot be undone.</span>
+                        <span>Would you like to delete files for this movie?</span><br></br>
+                        <Button variant='outline-danger' active={this.state.deleteChecked} className='deleteFilesButton' onClick={()=> this.setState({deleteChecked: !this.state.deleteChecked})}>
+                            Yes
+                        </Button>
                     </Modal.Body>
                     <Modal.Footer bsPrefix="modalFooter">
                         <Button className="modalButton" variant="danger" onClick={this.handleDeleteClick}>
                             Delete
                         </Button>
-                        <Button className="modalButton" variant="secondary" onClick={ () => this.setState({showDeleted: false})}>
+                        <Button className="modalButton" variant="secondary" onClick={ () => this.setState({deleteChecked: false, showDeleted: false})}>
                             Close
                         </Button>
                     </Modal.Footer>

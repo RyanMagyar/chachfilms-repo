@@ -80,7 +80,7 @@ class AddMovie extends React.Component{
         const pageNumber = updatedPageNo ? `&page=${updatedPageNo}`
         : '';
         // const searchUrl = `https://api.themoviedb.org/3/search/movie?api_key=f5b9735057a630e47e4eec010054dd7a&query=${query}&page=${pageNumber}`
-        const searchUrl = `http://192.168.0.33:7878/api/v3/movie/lookup?term=${query}&apikey=7f5a36fb199f46e68eca4f0d476638ad`
+        const searchUrl = `/api/v1/search/?query=${query}`;
 
         if(this.cancel) {
             this.cancel.cancel()
@@ -91,10 +91,11 @@ class AddMovie extends React.Component{
         axios
         .get(searchUrl, {cancelToken: this.cancel.token})
         .then((response) => {
-            const noResults = !response.data.length ?
+            console.log(response);
+            const noResults = !response.data.data.length ?
             'No more search results.' : '';
             this.setState({
-                results: response.data,
+                results: response.data.data,
                 message: noResults,
                 loading: false,
             });
@@ -116,6 +117,7 @@ class AddMovie extends React.Component{
             return (
                 <div className="results-container">
                     {results.map((result) => {
+                        {console.log(result)}
                         return (
                             <div key={result.tmdbId} className="movieResult">
                                 <div className="image-wrapper">
@@ -126,10 +128,13 @@ class AddMovie extends React.Component{
                                 <div className="resultContent">
                                     <div className="resultHeader">
                                         <h6 className="resultTitle">{result.title}</h6>
-                                        {result.folderName ? <Button className="addMovieButton" variant="info">Downloaded</Button>
+                                        {/*result.folderName ? <Button className="addMovieButton" variant="info">Downloaded</Button>
                                         : <Button variant="success" className="addMovieButton" onClick={() => this.setState({
                                             showAddMovie: true, currentResult: result,
-                                        })}>Add Movie</Button>}
+                                        })}>Add Movie</Button>*/}
+                                        <Button variant="success" className="addMovieButton" onClick={() => this.setState({
+                                            showAddMovie: true, currentResult: result,
+                                        })}>Add Movie</Button>
                                         
                                     </div>
                                     <div className="resultOverview">

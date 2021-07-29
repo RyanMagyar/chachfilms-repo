@@ -108,6 +108,16 @@ def set_movie_state(movieid):
 @jwt_required()
 def delete_movie(movieid):
     """Delete movie with movieid."""
+    delete_checked = request.args.get('deleteChecked')
+    
+    radarr_reponse = deleteFromRadarr(movieid, delete_checked)
+    
+    if radarr_reponse > 299:
+        response = {'movieid': movieid,
+                    'message': 'Radarr Error', 
+                    'status_code': 400}
+        return response, 400
+    
     cur = chachapp.model.get_db()
     cur.execute('''DELETE FROM movies
                 WHERE movieid = %s
@@ -167,15 +177,42 @@ def add_movie(user):
     
     return response, 201
 
+@chachapp.app.route('/api/v1/search/', methods=["GET"])
+def search_movie():
+    query = request.args.get('query')
+    url = 'https://radarr.chachfilms.com/api/v3/movie/lookup?term=' \
+    + query + '&apikey=7f5a36fb199f46e68eca4f0d476638ad'
+    r = requests.get(url)
+    
+    context = {
+        "data": r.json(),
+    }
+    return flask.jsonify(**context)
+    
+
 def addToRadarr(movie):
     movie['folderName'] = "/movies/" + movie['folder']
     movie['rootFolderPath'] = "/movies/"
     movie['monitored'] = True
     movie['qualityProfileId'] = 4
     movie['addOptions'] = {'searchForMovie': True}
-    
-    r = requests.post('http://192.168.0.33:7878/api/v3/movie?apikey=7f5a36fb199f46e68eca4f0d476638ad', json.dumps(movie))
+    url = 'https://radarr.chachfilms.com/api/v3/movie?apikey=7f5a36fb199f46e68eca4f0d476638ad'
+    r = requests.post(url=url, data=json.dumps(movie))
     return r.status_code
+
+def deleteFromRadarr(movieid, delete_checked):
+    r = requests.get('https://radarr.chachfilms.com/api/v3/movie?apikey=7f5a36fb199f46e68eca4f0d476638ad')
+    imdb_id = 'tt' + movieid
+    for movie_object in r.json():
+        if movie_object['imdbId'] == imdb_id:
+            movie_to_delete = movie_object
+    print(delete_checked)
+    r = requests.delete(url='https://radarr.chachfilms.com/api/v3/movie/' + 
+                        str(movie_to_delete['id']) + '?deleteFiles=' + delete_checked
+                        + '&' + 'apikey=7f5a36fb199f46e68eca4f0d476638ad')
+    return r.status_code
+    
+    
     
 
     

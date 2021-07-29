@@ -105,13 +105,11 @@ body {
     white-space: nowrap; /* Don't forget this one */
     text-overflow: ellipsis;
 }
-
 .movieButtons {
     margin-top: auto;
     display: flex;
     justify-content: space-between;
 }
-
 .watchedButton {
     /*margin-top: auto;
     margin-right: auto;*/
@@ -159,22 +157,7 @@ body {
     height: 200px;
     margin-top: auto;
     margin-bottom: auto;
-}
 
-.deletedModal {
-    width: 550px;
-    height: 300px;
-    margin-top: auto;
-    margin-bottom: auto;
-}
-
-.deleteFilesButton {
-    width: 110px;
-    height: 45px;
-    font-size: 14pt;
-    text-align: center;
-    margin-top: 15px;
-    margin-bottom: 0px;
 }
 
 .modalBody{
@@ -184,9 +167,13 @@ body {
     flex-direction: column; 
     justify-content: center;
     text-align: center;
-    align-items: center;
 }
+/*
+.modalBodyText{
+    text-align: center;
 
+}
+*/
 .modalButton {
     width: 110px;
     height: 45px;
@@ -199,7 +186,6 @@ body {
     margin-top: auto;
     display: flex;
     justify-content: space-around;
-    align-items: center;
 }
 
 .close{

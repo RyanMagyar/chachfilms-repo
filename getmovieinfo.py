@@ -41,4 +41,4 @@ if response.status_code == 200:
         shutil.copyfileobj(response.raw, out_file)
 
 print('INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)')
-print('VALUES (\'', movie.movieID, '\', \'',  movie['title'], '\', ', movie['year'], ', \'', director['name'], '\', \'', filename, '\', ARRAY ', movie['genres'], ', ', movie['rating'], ', \'ondeck\'', ');', sep='')
+print('VALUES (\'', movie['imdbID'], '\', \'',  movie['title'], '\', ', movie['year'], ', \'', director['name'], '\', \'', filename, '\', ARRAY ', movie['genres'], ', ', movie['rating'], ', \'ondeck\'', ');', sep='')

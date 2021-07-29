@@ -6,7 +6,11 @@ from flask import (
 from flask_jwt_extended import (
     create_access_token, get_jwt_identity,
     jwt_required, JWTManager)
+import json
 import random
+import requests
+import shutil
+from imdb import IMDb
 import chachapp
 
 jwt = JWTManager(chachapp.app)
@@ -120,8 +124,62 @@ def delete_movie(movieid):
                 'status_code': 204}
     return response, 204
 
+@chachapp.app.route('/api/v1/u/<string:user>/addmovie/', methods=["POST"])
+@jwt_required()
+def add_movie(user):
+    """Add new movie."""
+    cur = chachapp.model.get_db()
+    new_movie = request.get_json()
+    new_movie = new_movie['movie']
+
+    radarr_reponse = addToRadarr(new_movie)
+    
+    if radarr_reponse > 299:
+        response = {'movie': new_movie['title'],
+                    'message': 'Radarr could not be reached', 
+                    'status_code': radarr_reponse}
+        return response, radarr_reponse
+    
+    ia = IMDb()
+    movie = ia.get_movie(new_movie['imdbId'].replace('tt',''))
+    url = movie['full-size cover url']
+    filename = movie['title'].replace(' ', '') + str(movie['year']) + 'coverphoto.jpg'
+    response = requests.get(url, stream=True)
+    path = chachapp.app.config["UPLOAD_FOLDER"]/filename
+
+    if response.status_code == 200:
+        with open (path, 'wb') as out_file:
+            shutil.copyfileobj(response.raw, out_file)
+    
+    cur.execute('''INSERT INTO movies
+                (movieid, title, year, director, filename, 
+                genres, imdbrating, state, suggestedby) 
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                ''',(movie['imdbID'], movie['title'], movie['year'],
+                     movie['directors'][0]['name'], filename, movie['genres'], 
+                     movie['rating'], "ondeck", user))
+    
+    
+    
+    response = {'message': 'movie added succesfully',
+                'status_code': 201}
+    
+    return response, 201
+
+def addToRadarr(movie):
+    movie['folderName'] = "/movies/" + movie['folder']
+    movie['rootFolderPath'] = "/movies/"
+    movie['monitored'] = True
+    movie['qualityProfileId'] = 4
+    movie['addOptions'] = {'searchForMovie': True}
+    
+    r = requests.post('http://192.168.0.33:7878/api/v3/movie?apikey=7f5a36fb199f46e68eca4f0d476638ad', json.dumps(movie))
+    return r.status_code
+    
+
     
 
 @chachapp.app.errorhandler(404)   
 def not_found(e):   
   return flask.render_template("index.html")
+

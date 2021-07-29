@@ -70,7 +70,7 @@ class Header extends React.Component{
                             <Dropdown.Item onClick={() => this.setState({showLogout: true})} className="navigationItem">
                                 Logout
                             </Dropdown.Item>
-                    </DropdownButton>
+                        </DropdownButton>
                     ) : (
                         <Link className='header-link' id='rightItem' to='/login'>Login</Link>
                     )

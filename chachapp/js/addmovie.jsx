@@ -77,11 +77,9 @@ class AddMovie extends React.Component{
 
 
     fetchSearchResults = (updatedPageNo = '', query) => {
-        const pageNumber = updatedPageNo ? `&page=${updatedPageNo}`
-        : '';
         // const searchUrl = `https://api.themoviedb.org/3/search/movie?api_key=f5b9735057a630e47e4eec010054dd7a&query=${query}&page=${pageNumber}`
         const searchUrl = `/api/v1/search/?query=${query}`;
-
+        const { isLoggedIn } = this.state;
         if(this.cancel) {
             this.cancel.cancel()
         }
@@ -89,9 +87,14 @@ class AddMovie extends React.Component{
         this.cancel = axios.CancelToken.source();
 
         axios
-        .get(searchUrl, {cancelToken: this.cancel.token})
+        .get(searchUrl, 
+        {cancelToken: this.cancel.token,
+         credentials: 'same-origin',
+         method: 'GET',
+         headers: {
+                "authorization": `Bearer ${isLoggedIn}`,
+                'Content-Type': 'application/json'}})
         .then((response) => {
-            console.log(response);
             const noResults = !response.data.data.length ?
             'No more search results.' : '';
             this.setState({
@@ -117,7 +120,6 @@ class AddMovie extends React.Component{
             return (
                 <div className="results-container">
                     {results.map((result) => {
-                        {console.log(result)}
                         return (
                             <div key={result.tmdbId} className="movieResult">
                                 <div className="image-wrapper">

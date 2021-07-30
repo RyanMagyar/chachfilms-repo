@@ -178,19 +178,54 @@ def add_movie(user):
     return response, 201
 
 @chachapp.app.route('/api/v1/search/', methods=["GET"])
+@jwt_required()
 def search_movie():
+    """Use Radarr API to search for query."""
     query = request.args.get('query')
     url = 'https://radarr.chachfilms.com/api/v3/movie/lookup?term=' \
     + query + '&apikey=7f5a36fb199f46e68eca4f0d476638ad'
     r = requests.get(url)
     
+    if r.status_code > 299:
+        response = {
+                    'message': 'Radarr could not be reached', 
+                    'status_code': r.status_code}
+        return response, r.status_code
+    
     context = {
         "data": r.json(),
     }
     return flask.jsonify(**context)
+
+@chachapp.app.route('/api/v1/downloads/', methods=["GET"])
+@jwt_required()
+def get_downloads():
+    """Get download queue from Radarr."""
+    url = 'https://radarr.chachfilms.com/api/v3/queue/' \
+    + '?apikey=7f5a36fb199f46e68eca4f0d476638ad'
+    r = requests.get(url)
     
+    if r.status_code > 299:
+        response = {
+                    'message': 'Radarr could not be reached', 
+                    'status_code': r.status_code}
+        return response, r.status_code
+    records = r.json()['records']
+    for record in records:
+        movieURL = 'https://radarr.chachfilms.com/api/v3/movie/' \
+                    + str(record['movieId']) + '?apikey=7f5a36fb199f46e68eca4f0d476638ad'
+        movieRequest = requests.get(movieURL)
+        record['title'] = movieRequest.json()['title']
+        
+
+    context = {
+        "data": records,
+    }
+    return flask.jsonify(**context)
+
 
 def addToRadarr(movie):
+    """Add new movie object to Radarr."""
     movie['folderName'] = "/movies/" + movie['folder']
     movie['rootFolderPath'] = "/movies/"
     movie['monitored'] = True
@@ -201,6 +236,7 @@ def addToRadarr(movie):
     return r.status_code
 
 def deleteFromRadarr(movieid, delete_checked):
+    """Delete movie object from Radarr."""
     r = requests.get('https://radarr.chachfilms.com/api/v3/movie?apikey=7f5a36fb199f46e68eca4f0d476638ad')
     imdb_id = 'tt' + movieid
     for movie_object in r.json():

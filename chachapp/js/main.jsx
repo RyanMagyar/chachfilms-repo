@@ -9,6 +9,7 @@ import AddMovie from './addmovie';
 import { Route, Link, Redirect } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../static/css/style.css";
+import Downloads from './downloads';
 
 
 class Main extends React.Component{
@@ -43,6 +44,12 @@ class Main extends React.Component{
                 <Route exact path="/reviewers/" component={Movies}/>
                 <Route exact path="/addmovie/" render={() => (
                     userToken ? (<AddMovie/>
+                    ) :(
+                        <Redirect to='/login/'/>
+                    )
+                )}/>
+                <Route exact path="/downloads/" render={() => (
+                    userToken ? (<Downloads/>
                     ) :(
                         <Redirect to='/login/'/>
                     )

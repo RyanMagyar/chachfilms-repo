@@ -45,6 +45,9 @@ class Header extends React.Component{
                         <Dropdown.Item as={Link} to="/addmovie/" className="navigationItem">
                             Add New Movie
                         </Dropdown.Item>
+                        <Dropdown.Item as={Link} to="/downloads/" className="navigationItem">
+                            Download Queue
+                        </Dropdown.Item>
                         <Dropdown.Item as={Link} to="/movies" className="navigationItem">
                             Watched Movies
                         </Dropdown.Item>

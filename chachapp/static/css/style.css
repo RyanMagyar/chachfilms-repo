@@ -56,15 +56,10 @@
 .navigationItem{
     color: black;
     font-size: 16pt;
+    padding: 10px;
     text-align: center;
     width: 175px;
 }
-
-.header-link:hover{
-    color: rgb(183, 183, 183);
-
-}
-
 
 body {
     background-color: rgb(40, 40, 41);
@@ -461,6 +456,39 @@ html{
     margin: 0;
     padding: 0;
 }
+
+.downloadsHeading {
+	font-size: 26pt;
+    padding: 10px;
+	color: white;
+	text-align: center;
+}
+
+.queueContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+}
+
+.queueItem{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100px;
+    width: 90%;
+    border: solid 2px white;
+}
+
+.queueItemTitle{
+    font-size: 18pt;
+	color: white;
+    margin-right: 10px;
+    margin-left: 10px;
+
+}
+
 #instaHeader{
    font-family: 'Brush Script MT';
    margin-left: 30px;

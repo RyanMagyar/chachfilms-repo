@@ -14,12 +14,10 @@ class Home extends React.Component {
         const userToken = JSON.parse(tokenString);
         this.state = {
             lastWatched: 'Picked Last', rolledMovie: 'Please select last person to pick!', isLoggedIn: userToken,
-            toggleRerender: false, numInRotation: {'Ryan': 0,
-            'Justin': 0, 'Marcus': 0, 'Jon': 0}, toggleHomeRerender: this.props.toggleHomeRerender,
+            toggleRerender: false,  toggleHomeRerender: this.props.toggleHomeRerender,
         };
         this.handleClick = this.handleClick.bind(this);
         this.rerenderParent = this.rerenderParent.bind(this);
-        this.getNumInRotation = this.getNumInRotation.bind(this);
 
     }
 
@@ -27,15 +25,7 @@ class Home extends React.Component {
         this.setState({toggleRerender: !this.state.toggleRerender});
     }
 
-    getNumInRotation(movies) {
-        const { numInRotation } = this.state;
-        for(var person in numInRotation){
-            numInRotation[person] = 0;
-        }
-        movies.forEach(movie => numInRotation[movie.suggestedby] = numInRotation[movie.suggestedby] + 1)
-        
-        this.setState({numInRotation: numInRotation});
-    }
+    
 
     componentDidUpdate(previousProps){
         if(previousProps.toggleHomeRerender != this.props.toggleHomeRerender){
@@ -61,9 +51,7 @@ class Home extends React.Component {
                     movies: data.movies,
                 });
             })
-            .catch((error) => console.log(error));
-
-        
+            .catch((error) => console.log(error)); 
     }
 
     handleClick() {
@@ -114,15 +102,15 @@ class Home extends React.Component {
                 <h1 className="moviesHeading">Movies in Rotation</h1>
                         
                 <Feed url="/api/v1/inrotation/" 
-                getNumInRotation={this.getNumInRotation}
-                numInRotation={this.state.numInRotation}
+                getNumInRotation={this.props.getNumInRotation}
+                numInRotation={this.props.numInRotation}
                 toggleRerender={this.state.toggleRerender}
                 rerenderParent={this.rerenderParent}
                 isLoggedIn={this.state.isLoggedIn}/>
                 <h1 className="moviesHeading">Movies on Deck</h1>
                 <Feed url="/api/v1/ondeck/" 
-                getNumInRotation={this.getNumInRotation}
-                numInRotation={this.state.numInRotation}
+                getNumInRotation={this.props.getNumInRotation}
+                numInRotation={this.props.numInRotation}
                 toggleRerender={this.state.toggleRerender} 
                 rerenderParent={this.rerenderParent}
                 isLoggedIn={this.state.isLoggedIn}/>

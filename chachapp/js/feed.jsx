@@ -69,6 +69,7 @@ class Feed extends React.Component {
                         director={movie.director}
                         movieState={movie.state}
                         movieid={movie.movieid}
+                        added={movie.added}
                         rerenderParent={this.props.rerenderParent}
                         numInRotation={this.props.numInRotation}
                         isLoggedIn={this.props.isLoggedIn}

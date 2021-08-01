@@ -26,30 +26,13 @@ def get_v1():
     print(user)
     return flask.jsonify(**context)
 
-@chachapp.app.route('/api/v1/inrotation/', methods=["GET"])
-def get_in_rotation():
+@chachapp.app.route('/api/v1/<string:state>/', methods=["GET"])
+def get_movies_in_state(state):
     """Return movies inrotation."""
     cur = chachapp.model.get_db()
     cur.execute("""SELECT * FROM movies m
-                WHERE m.state='inrotation' 
-                ORDER BY m.suggestedby""")
-    movies = cur.fetchall()
-    for movie in movies:
-        movie['imdbrating'] =  str(movie['imdbrating'])
-        movie['filename'] = "/uploads/{}".format(movie['filename'])
-    
-    context = {
-        "movies": movies,
-    }
-    return flask.jsonify(**context)
-
-@chachapp.app.route('/api/v1/ondeck/', methods=["GET"])
-def get_on_deck():
-    """Return movies inrotation."""
-    cur = chachapp.model.get_db()
-    cur.execute("""SELECT * FROM movies m
-                WHERE m.state='ondeck' 
-                ORDER BY m.suggestedby""")
+                WHERE m.state=%s 
+                ORDER BY m.suggestedby""", (state,))
     movies = cur.fetchall()
     for movie in movies:
         movie['imdbrating'] =  str(movie['imdbrating'])
@@ -173,7 +156,9 @@ def delete_movie(movieid):
     """Delete movie with movieid."""
     delete_checked = request.args.get('deleteChecked')
     
-    radarr_reponse = deleteFromRadarr(movieid, delete_checked)
+    radarr_reponse = 200
+    if delete_checked == 'true':
+        radarr_reponse = deleteFromRadarr(movieid, delete_checked)
     
     if radarr_reponse > 299:
         response = {'movieid': movieid,
@@ -302,13 +287,16 @@ def deleteFromRadarr(movieid, delete_checked):
     """Delete movie object from Radarr."""
     r = requests.get('https://radarr.chachfilms.com/api/v3/movie?apikey=7f5a36fb199f46e68eca4f0d476638ad')
     imdb_id = 'tt' + movieid
+    
+    movie_to_delete = None
     for movie_object in r.json():
         if movie_object['imdbId'] == imdb_id:
             movie_to_delete = movie_object
-    print(delete_checked)
-    r = requests.delete(url='https://radarr.chachfilms.com/api/v3/movie/' + 
+    if(movie_to_delete is not None):
+        r = requests.delete(url='https://radarr.chachfilms.com/api/v3/movie/' + 
                         str(movie_to_delete['id']) + '?deleteFiles=' + delete_checked
                         + '&' + 'apikey=7f5a36fb199f46e68eca4f0d476638ad')
+    
     return r.status_code
     
     

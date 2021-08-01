@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Textfit } from 'react-textfit';
+import FilmLoader from '../static/images/filmLoader.gif'
 import { Button, ButtonGroup, ToggleButton } from "react-bootstrap";
 import { Modal } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -15,7 +15,8 @@ class Movie extends React.Component {
         this.state = { currentState: movieState, showWatched: false, fade: false,
          showDeleted: false, isLoggedIn: this.props.isLoggedIn, showInRotation: false,
          showOnDeck: false, showWaring: false, deleteChecked: false, ratings: [], average: -1,
-         showRating: false, newRating: 0, message: '', confirmDisabled: false,
+         showRating: false, newRating: 0, message: '', confirmDisabled: false, filmLoading: false,
+         backdrop: true,
         }
         this.handleDeleteClick = this.handleDeleteClick.bind(this);
         this.handleWatchedClick = this.handleStateButtonClick.bind(this);
@@ -58,7 +59,7 @@ class Movie extends React.Component {
         const { movieid } = this.props;
         const setStateUrl = `/api/v1/m/${movieid}/delete/?deleteChecked=${this.state.deleteChecked}`;
         const {isLoggedIn} = this.state;
-
+        const pastState = this.state.currentState;
       
         fetch(setStateUrl, {
             credentials: 'same-origin',
@@ -70,8 +71,11 @@ class Movie extends React.Component {
              throw Error(response.statusText);
                 } else {
                this.setState({currentState: "deleted",
-                              deleteChecked: false,});
-               this.props.rerenderParent();
+                              deleteChecked: false,
+                              filmLoading: false,
+                              backdrop: true});
+                if(pastState != 'watched') this.props.rerenderParent();
+
 
             }
         })
@@ -89,7 +93,7 @@ class Movie extends React.Component {
         const { movieid } = this.props;
         const setStateUrl = `/api/v1/m/${movieid}/setstate/?state=${newState}`;
         const {isLoggedIn} = this.state;
-      
+        const pastState = this.state.currentState;
         fetch(setStateUrl, {
             credentials: 'same-origin',
             method: 'PUT',
@@ -100,8 +104,7 @@ class Movie extends React.Component {
                  throw Error(response.statusText);
             } else {
                 this.setState({currentState: newState});
-                this.props.rerenderParent();
-
+                if(pastState != 'watched') this.props.rerenderParent();
             }
         })
         .catch((error) => console.log(error))
@@ -187,6 +190,9 @@ class Movie extends React.Component {
         const { average } = this.state;
         const { showRating } = this.state;
         const { newRating } = this.state;
+        const { filmLoading } = this.state;
+        const { backdrop } = this.state;
+
 
 
 
@@ -225,15 +231,16 @@ class Movie extends React.Component {
                  }
                 <div className="movieButtons">
                     {isLoggedIn && <Button variant="danger" className="deleteButton" onClick={ () => this.setState({showDeleted: true})}>Delete</Button>}
-                    {(isLoggedIn && currentState == 'ondeck') && <Button variant="success" className="onDeckButton"onClick={ () => {
+                    {(isLoggedIn && (currentState == 'ondeck' || currentState == 'watched')) && <Button variant="success" className="onDeckButton"onClick={ () => {
                         const numInRotation = this.props.numInRotation;
-                        if(numInRotation[suggestedby] == 2){
+                        if(numInRotation[suggestedby] >= 2){
                             this.setState({showWarning: true})} else {
                                 this.setState({showInRotation: true})
                             }
                         }}>In Rotation</Button>}
-                    {(isLoggedIn && currentState == 'inrotation') && <Button variant="success" className="onDeckButton"onClick={ () => this.setState({showOnDeck: true})}>On Deck</Button>}
-                    {isLoggedIn && <Button className="watchedButton"onClick={ () => this.setState({showWatched: true})}>Watched</Button>}
+                    {(isLoggedIn && (currentState == 'inrotation' || currentState == 'watched')) && 
+                    <Button variant={currentState == 'watched' ? "primary" : "success"} className="onDeckButton"onClick={ () => this.setState({showOnDeck: true})}>On Deck</Button>}
+                    {(isLoggedIn && currentState != 'watched') && <Button className="watchedButton"onClick={ () => this.setState({showWatched: true})}>Watched</Button>}
 
                 </div>
                 <Modal centered contentClassName='watchedModal' show={showWatched} animation={false} onHide={() => this.setState({showWatched: false})}>
@@ -306,7 +313,10 @@ class Movie extends React.Component {
                     </Modal.Footer>
                 </Modal>
 
-                <Modal centered contentClassName='deletedModal' show={showDeleted} animation={false} onHide={() => this.setState({deleteChecked: false, showDeleted: false})}>
+                <Modal centered contentClassName='deletedModal' backdrop={backdrop}show={showDeleted} animation={false} onHide={() => this.setState({deleteChecked: false, showDeleted: false})}>
+                    {filmLoading ?
+                        <img  src={FilmLoader} className={`film-loading ${filmLoading ? 'show' : 'hide' }`}  alt="loader"/>
+                    :<div className="modal-content deletedModal">
                     <Modal.Header bsPrefix="modalHeader" closeButton>
                         <div className="modalHeaderLeft"></div>
                         <Modal.Title bsPrefix="modalTitle">Are You Sure?</Modal.Title>
@@ -320,13 +330,15 @@ class Movie extends React.Component {
                         </Button>
                     </Modal.Body>
                     <Modal.Footer bsPrefix="modalFooter">
-                        <Button className="modalButton" variant="danger" onClick={this.handleDeleteClick}>
+                        <Button className="modalButton" variant="danger" onClick={() => this.setState({filmLoading: true, backdrop:'static'},this.handleDeleteClick)}>
                             Delete
                         </Button>
                         <Button className="modalButton" variant="secondary" onClick={ () => this.setState({deleteChecked: false, showDeleted: false})}>
                             Close
                         </Button>
                     </Modal.Footer>
+                    </div>
+                    }
                 </Modal>
 
                 <Modal centered contentClassName='rateModal' show={showRating} animation={false} onHide={() => this.setState({showRating: false})}>

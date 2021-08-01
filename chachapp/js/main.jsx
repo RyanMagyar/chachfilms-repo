@@ -1,15 +1,14 @@
 import React from 'react';
-import Movies from './movies';
+import Watched from './watched';
 import Header from './header';
 import Home from './home';
 import Login from './login';
 import AddMovie from './addmovie';
-
+import Downloads from './downloads';
 
 import { Route, Link, Redirect } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../static/css/style.css";
-import Downloads from './downloads';
 
 
 class Main extends React.Component{
@@ -18,10 +17,13 @@ class Main extends React.Component{
         super(props);
         this.state = {
             toggleHeaderRerender: false, toggleHomeRerender: false,
+            numInRotation: {'Ryan': 0,
+            'Justin': 0, 'Marcus': 0, 'Jon': 0}
         };
 
         this.rerenderHeader = this.rerenderHeader.bind(this);
         this.rerenderHome = this.rerenderHome.bind(this);
+        this.getNumInRotation = this.getNumInRotation.bind(this);
 
     }
 
@@ -33,6 +35,16 @@ class Main extends React.Component{
         this.setState({toggleHomeRerender: !this.state.toggleHomeRerender});
     }
 
+    getNumInRotation(movies) {
+        const { numInRotation } = this.state;
+        for(var person in numInRotation){
+            numInRotation[person] = 0;
+        }
+        movies.forEach(movie => numInRotation[movie.suggestedby] = numInRotation[movie.suggestedby] + 1)
+        
+        this.setState({numInRotation: numInRotation});
+    }
+
     render(){
         const tokenString = localStorage.getItem('token');
         const userToken = JSON.parse(tokenString);
@@ -40,8 +52,9 @@ class Main extends React.Component{
             <div>
                 <Header toggleHeaderRerender={this.state.toggleHeaderRerender} 
                 rerenderHome={this.rerenderHome}/>
-                <Route exact path="/movies/" component={Movies}/>
-                <Route exact path="/reviewers/" component={Movies}/>
+                <Route exact path="/watched/" render={(props) => (<Watched getNumInRotation={this.getNumInRotation}
+                numInRotation={this.state.numInRotation}/>)}/>
+                <Route exact path="/reviewers/" component={Watched}/>
                 <Route exact path="/addmovie/" render={() => (
                     userToken ? (<AddMovie/>
                     ) :(
@@ -55,7 +68,8 @@ class Main extends React.Component{
                     )
                 )}/>
                 <Route exact path="/login/" render={(props) => (<Login rerenderHeader={this.rerenderHeader}/>)}/> 
-                <Route exact path="/" render={(props) => (<Home toggleHomeRerender={this.state.toggleHomeRerender}/>)}/>
+                <Route exact path="/" render={(props) => (<Home getNumInRotation={this.getNumInRotation}
+                numInRotation={this.state.numInRotation} toggleHomeRerender={this.state.toggleHomeRerender}/>)}/>
             </div>
         );
     }

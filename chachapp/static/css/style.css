@@ -157,8 +157,8 @@ body {
     
 }
 .film-loading{
-    width:550px;
-    height: 200px;
+    width: 550px;
+    height: 100%;
 }
 .watchedModal {
     width:550px;

@@ -60,6 +60,41 @@ def get_on_deck():
     }
     return flask.jsonify(**context)
 
+@chachapp.app.route('/api/v1/m/<string:movieid>/ratings/', methods=["GET"])
+def get_ratings(movieid):
+    """Return ratings for movieid."""
+    cur = chachapp.model.get_db()
+    cur.execute("""SELECT reviewer, rating FROM ratings r
+                WHERE r.movieid=%s 
+                """, (movieid,))
+    ratings_returned = cur.fetchall()
+    
+    ratings = []
+    for row in ratings_returned:
+        ratings.append(dict(row))
+
+    for rating in ratings:
+        if rating['rating'] is None:
+            rating['rating'] = -1
+        rating['rating'] = float(rating['rating'])
+    
+    cur.execute("""SELECT AVG(rating) FROM ratings r
+                WHERE r.movieid=%s 
+                """, (movieid,))
+    
+    rating_avg = cur.fetchone()
+    
+    if rating_avg['avg'] is None:
+        rating_avg['avg'] = -1
+    else:
+        rating_avg['avg'] = round(float(rating_avg['avg']), 2)
+
+    context = {
+        "ratings": ratings,
+        "average": rating_avg['avg'],
+    }
+    return flask.jsonify(**context)
+
 @chachapp.app.route('/api/v1/roll/<string:picked_last>/', methods=["GET"])
 def get_roll(picked_last):
     """Return random movie not from user who picked last."""
@@ -73,6 +108,33 @@ def get_roll(picked_last):
     }
     return flask.jsonify(**context)
 
+@chachapp.app.route('/api/v1/m/<string:movieid>/rate/', methods=["POST"])
+def post_rating(movieid):
+    """Rate movieid with given rating."""
+    cur = chachapp.model.get_db()
+    user = request.args.get('user')
+    rating = request.args.get('rating')
+    print(rating)
+    print(movieid)
+    print(user)
+    
+    if rating.lower() == 'slept':
+        rating = None
+    cur.execute("""INSERT INTO ratings (movieid, reviewer, rating)
+                VALUES (%s, %s, %s)
+                ON CONFLICT(movieid,reviewer) DO UPDATE 
+                SET rating = EXCLUDED.rating""", (movieid, user, rating))
+    
+    count = cur.rowcount
+    
+    if count != 1:
+        response = {'movieid': movieid,
+                    'message': 'Invalid movieid', 
+                    'status_code': 400}
+        return response, 400
+    
+    response = {'message': 'Rating submitted succesfully', 'status_code': 201}
+    return response, 201
 
 @chachapp.app.route('/api/v1/m/<string:movieid>/setstate/', methods=["PUT"])
 @jwt_required()
@@ -93,6 +155,7 @@ def set_movie_state(movieid):
                 SET state = %s
                 WHERE movieid = %s
                 ''', (newState, movieid))
+    
     count = cur.rowcount
     
     if count != 1:

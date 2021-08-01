@@ -96,6 +96,7 @@ body {
 .movieTitle {
     color: white;
     font-size: 20pt;
+    text-align: center;
     overflow: hidden;
     white-space: nowrap; /* Don't forget this one */
     text-overflow: ellipsis;
@@ -118,14 +119,24 @@ body {
 }
 
 .onDeckButton {
-    /*margin-top: auto;
-    margin-right: auto;*/
-    
     order: 2;
     width: 85px;
     height: 30px;
     font-size: 14px;
     text-align: center;
+}
+
+.rateButton {
+    width: 85px;
+    height: 30px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.suggestAndRate{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
 }
 
 .modalHeader {
@@ -163,6 +174,13 @@ body {
     margin-bottom: auto;
 }
 
+.rateModal {
+    width:550px;
+    height: 275px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
 .deleteFilesButton {
     width: 110px;
     height: 45px;
@@ -180,6 +198,10 @@ body {
     justify-content: center;
     text-align: center;
     align-items: center;
+}
+
+.modalBodyTextWarning{
+    color: red;
 }
 
 .modalButton {
@@ -388,6 +410,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    flex: 1;
 }
 
 .resultOverview{
@@ -450,6 +473,7 @@ body {
 .image-wrapper{
     width: 240px;
     height: 100%;
+    align-self: center;
 }
 html{
     height: 100%;

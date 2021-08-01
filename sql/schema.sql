@@ -23,7 +23,7 @@ CREATE TABLE reviewers(
 CREATE TABLE ratings(
   reviewer VARCHAR(20) NOT NULL,
   movieid VARCHAR(10) NOT NULL,
-  rating NUMERIC(3,2),
+  rating NUMERIC(4,2),
   FOREIGN KEY(reviewer) REFERENCES reviewers(username) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(movieid) REFERENCES movies(movieid) ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY(reviewer, movieid)

@@ -1,20 +1,23 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import Movie from './movie'
+// This code is copyright 2012 by Gavin Kistner, !@phrogz.net
+// It is covered under the license viewable at http://phrogz.net/JS/_ReuseLicense.txt
 
 class Feed extends React.Component {
 
     constructor(props){
         super(props);
-        this.state = { movies: [], rerender: false};
-
+        this.state = { movies: [], rerender: false, sortBy: this.props.sortBy};
+        this.sortMoviesBy = this.sortMoviesBy.bind(this);
+        this.dynamicSort = this.dynamicSort.bind(this);
+        console.log(this.props);
+        console.log(this.state);
     }
-
-    
+      
 
     componentDidUpdate(previousProps) {
         const { url } = this.props;
-
         if(previousProps.toggleRerender != this.props.toggleRerender){
             fetch(url)
             .then((response) => {
@@ -26,11 +29,40 @@ class Feed extends React.Component {
                 this.setState({
                     movies: data.movies,
                 });
+                this.sortMoviesBy();
                 if(url == "/api/v1/inrotation/") this.props.getNumInRotation(this.state.movies);
             })
             .catch((error) => console.log(error));
         }
+        else if(previousProps.sortBy != this.props.sortBy){
+            this.sortMoviesBy();
+        }
+    }
+
+    dynamicSort(property) {
+        var sortOrder = 1;
+        if(property[0] === "-") {
+            sortOrder = -1;
+            property = property.substr(1);
+        }
+        return function (a,b) {
+            /* next line works with strings and numbers, 
+             * and you may want to customize it to your needs
+             */
+            var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+            return result * sortOrder;
+        }
+    }
+
+    sortMoviesBy() {
+        const {movies} = this.state;
+        console.log(movies);
+        console.log(this.props.sortBy);
         
+        movies.sort(this.dynamicSort(this.props.sortBy));
+        console.log(movies);
+        this.setState({movies: movies})
+
     }
 
     componentDidMount(){
@@ -46,6 +78,7 @@ class Feed extends React.Component {
                 this.setState({
                     movies: data.movies,
                 });
+                this.sortMoviesBy();
                 if(url == "/api/v1/inrotation/") this.props.getNumInRotation(this.state.movies);
             })
             .catch((error) => console.log(error));
@@ -55,7 +88,6 @@ class Feed extends React.Component {
         const { movies } = this.state;
         const { numInRotation } = this.state;
         const { url } = this.props;
-
         return (
             <div className="feed">
                 {movies.map((movie) => (
@@ -70,6 +102,8 @@ class Feed extends React.Component {
                         movieState={movie.state}
                         movieid={movie.movieid}
                         added={movie.added}
+                        ratings={movie.ratings}
+                        average={movie.average}
                         rerenderParent={this.props.rerenderParent}
                         numInRotation={this.props.numInRotation}
                         isLoggedIn={this.props.isLoggedIn}

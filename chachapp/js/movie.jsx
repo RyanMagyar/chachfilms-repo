@@ -14,8 +14,8 @@ class Movie extends React.Component {
         const {numInRotation} = this.props;
         this.state = { currentState: movieState, showWatched: false, fade: false,
          showDeleted: false, isLoggedIn: this.props.isLoggedIn, showInRotation: false,
-         showOnDeck: false, showWaring: false, deleteChecked: false, ratings: [], average: -1,
-         showRating: false, newRating: 0, message: '', confirmDisabled: false, filmLoading: false,
+         showOnDeck: false, showWaring: false, deleteChecked: false, ratings: this.props.ratings, 
+         average: this.props.average, showRating: false, newRating: 0, message: '', confirmDisabled: false, filmLoading: false,
          backdrop: true,
         }
         this.handleDeleteClick = this.handleDeleteClick.bind(this);
@@ -31,7 +31,6 @@ class Movie extends React.Component {
 
         const { movieState } = this.props;
         this.setState({currentState: movieState, show: false,});
-        this.getRatings();
     }
 
     getRatings(){
@@ -112,10 +111,7 @@ class Movie extends React.Component {
 
     handleOnInputChange = (e) => {
         const newRating = e.target.value;
-        console.log(newRating);
-        console.log(isNaN(newRating));
 
-        
         if(newRating > 10){
             this.setState({newRating, 
                 message: 'Please enter a rating less than 10', 
@@ -148,8 +144,7 @@ class Movie extends React.Component {
         const user = localStorage.getItem('username');
         const { isLoggedIn } = this.state;
         const ratingUrl = `/api/v1/m/${movieid}/rate/?user=${user}&rating=${newRating}`;
-        console.log(ratingUrl);
-        console.log(movieid);
+
         fetch(ratingUrl, {
             credentials: 'same-origin',
             method: 'POST',

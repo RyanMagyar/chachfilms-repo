@@ -39,7 +39,6 @@ class Downloads extends React.Component {
     .then((data) => {
         const noResults = !data.data.length ?
             'No more search results.' : '';
-        console.log(data.data)
         this.setState({
             results: data.data,
             message: noResults});

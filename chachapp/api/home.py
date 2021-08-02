@@ -37,15 +37,31 @@ def get_movies_in_state(state):
     for movie in movies:
         movie['imdbrating'] =  str(movie['imdbrating'])
         movie['filename'] = "/uploads/{}".format(movie['filename'])
-    
+        # movie['ratings'] = get_ratings(movie['movieid'])
+        ratings_returned = get_ratings_helper(movie['movieid'])
+        movie['ratings'] = ratings_returned['ratings']
+        movie['average'] = ratings_returned['avg']
+        print(movie['added'])
+
     context = {
         "movies": movies,
     }
+
     return flask.jsonify(**context)
 
 @chachapp.app.route('/api/v1/m/<string:movieid>/ratings/', methods=["GET"])
 def get_ratings(movieid):
     """Return ratings for movieid."""
+    ratings = get_ratings_helper(movieid)
+
+    context = {
+        "ratings": ratings['ratings'],
+        "average": ratings['avg'],
+    }
+    return flask.jsonify(**context)
+
+def get_ratings_helper(movieid):
+    """Helper function for getting ratings"""
     cur = chachapp.model.get_db()
     cur.execute("""SELECT reviewer, rating FROM ratings r
                 WHERE r.movieid=%s 
@@ -71,12 +87,9 @@ def get_ratings(movieid):
         rating_avg['avg'] = -1
     else:
         rating_avg['avg'] = round(float(rating_avg['avg']), 2)
-
-    context = {
-        "ratings": ratings,
-        "average": rating_avg['avg'],
-    }
-    return flask.jsonify(**context)
+    ratings_dict = {"avg": rating_avg["avg"], "ratings": ratings}
+    
+    return ratings_dict
 
 @chachapp.app.route('/api/v1/roll/<string:picked_last>/', methods=["GET"])
 def get_roll(picked_last):

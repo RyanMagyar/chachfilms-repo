@@ -106,13 +106,16 @@ class Home extends React.Component {
                 numInRotation={this.props.numInRotation}
                 toggleRerender={this.state.toggleRerender}
                 rerenderParent={this.rerenderParent}
-                isLoggedIn={this.state.isLoggedIn}/>
+                isLoggedIn={this.state.isLoggedIn}
+                sortBy="suggestedby"
+                />
                 <h1 className="moviesHeading">Movies on Deck</h1>
                 <Feed url="/api/v1/ondeck/" 
                 getNumInRotation={this.props.getNumInRotation}
                 numInRotation={this.props.numInRotation}
                 toggleRerender={this.state.toggleRerender} 
                 rerenderParent={this.rerenderParent}
+                sortBy="suggestedby"
                 isLoggedIn={this.state.isLoggedIn}/>
             </div>
             

@@ -10,7 +10,7 @@ class Watched extends React.Component{
         const tokenString = localStorage.getItem('token');
         const userToken = JSON.parse(tokenString);
         this.state = {
-            isLoggedIn: userToken, sortBy: "added"
+            isLoggedIn: userToken, sortBy: "-added"
         };
 
     }
@@ -18,15 +18,14 @@ class Watched extends React.Component{
     
 
     render(){
-        console.log('rerender')
         return(
             <div>
                 <div className="watchedHeading">
                     <DropdownButton bsPrefix="navigationMenu" id="dropdown-basic-button" title='Sort By'>
-                        <Dropdown.Item onClick={() => this.setState({sortBy: "added"})} className="navigationItem">
+                        <Dropdown.Item onClick={() => this.setState({sortBy: "-added"})} className="navigationItem">
                             Most Recent
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => this.setState({sortBy: "-added"})} className="navigationItem">
+                        <Dropdown.Item onClick={() => this.setState({sortBy: "added"})} className="navigationItem">
                             Oldest
                         </Dropdown.Item>
                         <Dropdown.Item onClick={() => this.setState({sortBy: "-average"})} className="navigationItem">
@@ -36,7 +35,7 @@ class Watched extends React.Component{
                             Rating (Lowest)
                         </Dropdown.Item>
                         <Dropdown.Item onClick={() => this.setState({sortBy: "suggestedby"})} className="navigationItem">
-                            Reviewer
+                            Suggested By
                         </Dropdown.Item>
                     </DropdownButton>
                     <h1 className="moviesHeading">Watched Films</h1>

@@ -11,8 +11,8 @@ class Feed extends React.Component {
         this.state = { movies: [], rerender: false, sortBy: this.props.sortBy};
         this.sortMoviesBy = this.sortMoviesBy.bind(this);
         this.dynamicSort = this.dynamicSort.bind(this);
-        console.log(this.props);
-        console.log(this.state);
+        console.log(this.props.numInRotation);
+        
     }
       
 
@@ -30,7 +30,7 @@ class Feed extends React.Component {
                     movies: data.movies,
                 });
                 this.sortMoviesBy();
-                if(url == "/api/v1/inrotation/") this.props.getNumInRotation(this.state.movies);
+                if(url != "/api/v1/ondeck/") this.props.getNumInRotation(this.state.movies, url);
             })
             .catch((error) => console.log(error));
         }
@@ -56,12 +56,7 @@ class Feed extends React.Component {
 
     sortMoviesBy() {
         const {movies} = this.state;
-        console.log(movies);
-        console.log(this.props.sortBy);
-        
         movies.sort(this.dynamicSort(this.props.sortBy));
-        console.log(movies);
-        this.setState({movies: movies})
 
     }
 
@@ -79,7 +74,7 @@ class Feed extends React.Component {
                     movies: data.movies,
                 });
                 this.sortMoviesBy();
-                if(url == "/api/v1/inrotation/") this.props.getNumInRotation(this.state.movies);
+                if(url != "/api/v1/ondeck/") this.props.getNumInRotation(this.state.movies, url);
             })
             .catch((error) => console.log(error));
     }

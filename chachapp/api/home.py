@@ -148,7 +148,7 @@ def set_movie_state(movieid):
     
     cur = chachapp.model.get_db()
     cur.execute(''' UPDATE movies
-                SET state = %s
+                SET state = %s, added = CURRENT_TIMESTAMP
                 WHERE movieid = %s
                 ''', (newState, movieid))
     

@@ -17,8 +17,8 @@ class Main extends React.Component{
         super(props);
         this.state = {
             toggleHeaderRerender: false, toggleHomeRerender: false,
-            numInRotation: {'Ryan': 0,
-            'Justin': 0, 'Marcus': 0, 'Jon': 0}
+            numInRotation: {'Ryan': -1,
+            'Justin': -1, 'Marcus': -1, 'Jon': -1}
         };
 
         this.rerenderHeader = this.rerenderHeader.bind(this);
@@ -35,14 +35,35 @@ class Main extends React.Component{
         this.setState({toggleHomeRerender: !this.state.toggleHomeRerender});
     }
 
-    getNumInRotation(movies) {
+    getNumInRotation(movies, url) {
         const { numInRotation } = this.state;
-        for(var person in numInRotation){
-            numInRotation[person] = 0;
+
+        if(url == "/api/v1/watched/" && numInRotation[Object.keys(numInRotation)[0]] == -1){
+            var inRotationMovies = [];
+            fetch("/api/v1/inrotation/")
+            .then((response) => {
+                if (!response.ok) throw Error(response.statusText);
+                
+                return response.json();
+            })
+            .then((data) => {
+                inRotationMovies = data.movies;
+                for(var person in numInRotation){
+                    numInRotation[person] = 0;
+                }
+                inRotationMovies.forEach(movie => numInRotation[movie.suggestedby] = numInRotation[movie.suggestedby] + 1);    
+            })
+            .catch((error) => console.log(error));
         }
-        movies.forEach(movie => numInRotation[movie.suggestedby] = numInRotation[movie.suggestedby] + 1)
+        else if(url == "/api/v1/inrotation/"){
+            for(var person in numInRotation){
+                numInRotation[person] = 0;
+            }
+            movies.forEach(movie => numInRotation[movie.suggestedby] = numInRotation[movie.suggestedby] + 1);    
+        }
+
         
-        this.setState({numInRotation: numInRotation});
+        this.setState({numInRotation: numInRotation}, console.log(this.state.numInRotation));
     }
 
     render(){

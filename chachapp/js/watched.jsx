@@ -10,7 +10,7 @@ class Watched extends React.Component{
         const tokenString = localStorage.getItem('token');
         const userToken = JSON.parse(tokenString);
         this.state = {
-            isLoggedIn: userToken, sortBy: "-added"
+            isLoggedIn: userToken, sortBy: "-added", filterBy: "",
         };
 
     }
@@ -22,24 +22,56 @@ class Watched extends React.Component{
             <div>
                 <div className="watchedHeading">
                     <DropdownButton bsPrefix="navigationMenu" id="dropdown-basic-button" title='Sort By'>
-                        <Dropdown.Item onClick={() => this.setState({sortBy: "-added"})} className="navigationItem">
+                        <Dropdown.Item active={this.state.sortBy == '-added' ? true : false} onClick={() => this.setState({sortBy: "-added"})} className="navigationItem">
                             Most Recent
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => this.setState({sortBy: "added"})} className="navigationItem">
+                        <Dropdown.Item active={this.state.sortBy == 'added' ? true : false} onClick={() => this.setState({sortBy: "added"})} className="navigationItem">
                             Oldest
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => this.setState({sortBy: "-average"})} className="navigationItem">
+                        <Dropdown.Item active={this.state.sortBy == '-average' ? true : false} onClick={() => this.setState({sortBy: "-average"})} className="navigationItem">
                             Rating (Highest)
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => this.setState({sortBy: "average"})} className="navigationItem">
+                        <Dropdown.Item active={this.state.sortBy == 'average' ? true : false} onClick={() => this.setState({sortBy: "average"})} className="navigationItem">
                             Rating (Lowest)
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => this.setState({sortBy: "suggestedby"})} className="navigationItem">
+                        <Dropdown.Item active={this.state.sortBy == 'suggestedby' ? true : false} onClick={() => this.setState({sortBy: "suggestedby"})} className="navigationItem">
                             Suggested By
+                        </Dropdown.Item>
+                        <Dropdown.Item active={this.state.sortBy == 'year' ? true : false} onClick={() => this.setState({sortBy: "year"})} className="navigationItem">
+                            Year (Oldest)
+                        </Dropdown.Item>
+                        <Dropdown.Item active={this.state.sortBy == '-year' ? true : false} onClick={() => this.setState({sortBy: "-year"})} className="navigationItem">
+                            Year (Newest)
                         </Dropdown.Item>
                     </DropdownButton>
                     <h1 className="moviesHeading">Watched Films</h1>
-                    <div className="fakeHeadingDiv"></div>
+                    <DropdownButton bsPrefix="navigationMenu" id="dropdown-basic-button" title='Filter By'>
+                        <Dropdown.Item active={this.state.filterBy == 'Ryan' ? true : false} 
+                        onClick={() => this.state.filterBy == "Ryan" ? this.setState({filterBy: ""}) : this.setState({filterBy: "Ryan"})} 
+                        className="navigationItem"
+                        >
+                            Ryan
+                        </Dropdown.Item>
+                        <Dropdown.Item active={this.state.filterBy == 'Marcus' ? true : false} 
+                        onClick={() => this.state.filterBy == "Marcus" ? this.setState({filterBy: ""}) : this.setState({filterBy: "Marcus"})} 
+                        className="navigationItem"
+                        >
+                            Marcus
+                        </Dropdown.Item>
+                        <Dropdown.Item active={this.state.filterBy == 'Jon' ? true : false} 
+                        onClick={() => this.state.filterBy == "Jon" ? this.setState({filterBy: ""}) : this.setState({filterBy: "Jon"})} 
+                        className="navigationItem"
+                        >
+                            Jon
+                        </Dropdown.Item>
+                        <Dropdown.Item active={this.state.filterBy == 'Justin' ? true : false} 
+                        onClick={() => this.state.filterBy == "Justin" ? this.setState({filterBy: ""}) : this.setState({filterBy: "Justin"})} 
+                        className="navigationItem"
+                        >
+                            Justin
+                        </Dropdown.Item>
+                    </DropdownButton>
+               {/* <div className="fakeHeadingDiv"></div>*/}
 
                 </div>
                     <Feed url="/api/v1/watched/"
@@ -47,6 +79,8 @@ class Watched extends React.Component{
                         numInRotation={this.props.numInRotation}
                         isLoggedIn={this.state.isLoggedIn}
                         sortBy={this.state.sortBy}
+                        filterBy={this.state.filterBy}
+
                     />
             </div>
         );

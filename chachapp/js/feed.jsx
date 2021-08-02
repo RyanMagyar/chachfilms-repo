@@ -8,11 +8,12 @@ class Feed extends React.Component {
 
     constructor(props){
         super(props);
-        this.state = { movies: [], rerender: false, sortBy: this.props.sortBy};
+        this.state = { movies: [], filteredMovies: [], rerender: false, 
+        sortBy: this.props.sortBy, filterBy: this.props.filterBy};
         this.sortMoviesBy = this.sortMoviesBy.bind(this);
         this.dynamicSort = this.dynamicSort.bind(this);
-        console.log(this.props.numInRotation);
-        
+        this.filterMoviesBy = this.filterMoviesBy.bind(this);
+
     }
       
 
@@ -28,14 +29,19 @@ class Feed extends React.Component {
             .then((data) => {
                 this.setState({
                     movies: data.movies,
+                    filteredMovies: data.movies,
                 });
                 this.sortMoviesBy();
+                this.filterMoviesBy();
                 if(url != "/api/v1/ondeck/") this.props.getNumInRotation(this.state.movies, url);
             })
             .catch((error) => console.log(error));
         }
         else if(previousProps.sortBy != this.props.sortBy){
             this.sortMoviesBy();
+        }
+        else if(previousProps.filterBy != this.props.filterBy){
+            this.filterMoviesBy();
         }
     }
 
@@ -56,7 +62,21 @@ class Feed extends React.Component {
 
     sortMoviesBy() {
         const {movies} = this.state;
-        movies.sort(this.dynamicSort(this.props.sortBy));
+        this.setState({movies: movies.sort(this.dynamicSort(this.props.sortBy))});
+        this.filterMoviesBy();
+    }
+
+    filterMoviesBy(){
+        const filterBy = this.props.filterBy;
+        var filteredMovies = this.state.movies;
+        console.log(filterBy);
+        if(filterBy == ""){
+            this.setState({filteredMovies: filteredMovies});
+            
+        } else {
+            this.setState({filteredMovies: filteredMovies.filter(movie => movie.suggestedby == filterBy)});
+
+        }
 
     }
 
@@ -72,8 +92,10 @@ class Feed extends React.Component {
             .then((data) => {
                 this.setState({
                     movies: data.movies,
+                    filteredMovies: data.movies,
                 });
                 this.sortMoviesBy();
+                this.filterMoviesBy();
                 if(url != "/api/v1/ondeck/") this.props.getNumInRotation(this.state.movies, url);
             })
             .catch((error) => console.log(error));
@@ -81,11 +103,23 @@ class Feed extends React.Component {
 
     render() {
         const { movies } = this.state;
+        const { filteredMovies } = this.state;
         const { numInRotation } = this.state;
         const { url } = this.props;
+        var mappedMovies = []
+        if(url == '/api/v1/watched/' && filteredMovies.length < movies.length){
+            mappedMovies = filteredMovies
+            console.log(filteredMovies);
+            console.log(movies);
+
+        }
+        else{
+            mappedMovies = movies
+        }
+
         return (
             <div className="feed">
-                {movies.map((movie) => (
+                {mappedMovies.map((movie) => (
                     <Movie 
                         key={movie.movieid}
                         suggestedby={movie.suggestedby}

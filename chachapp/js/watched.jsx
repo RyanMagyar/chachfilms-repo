@@ -11,11 +11,16 @@ class Watched extends React.Component{
         const userToken = JSON.parse(tokenString);
         this.state = {
             isLoggedIn: userToken, sortBy: "-added", filterBy: "",
+            toggleRerender: false,
         };
+
+        this.rerenderParent = this.rerenderParent.bind(this);
 
     }
 
-    
+    rerenderParent() {
+        this.setState({toggleRerender: !this.state.toggleRerender});
+    }
 
     render(){
         return(
@@ -76,6 +81,8 @@ class Watched extends React.Component{
                 </div>
                     <Feed url="/api/v1/watched/"
                         getNumInRotation={this.props.getNumInRotation}
+                        toggleRerender={this.state.toggleRerender}
+                        rerenderParent={this.rerenderParent}
                         numInRotation={this.props.numInRotation}
                         isLoggedIn={this.state.isLoggedIn}
                         sortBy={this.state.sortBy}

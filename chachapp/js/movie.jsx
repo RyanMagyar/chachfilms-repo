@@ -155,7 +155,10 @@ class Movie extends React.Component {
                  throw Error(response.statusText);
             } else {
                 this.setState({showRating: false, 
-                    newRating: 0, message: '', confirmDisabled: false}, this.getRatings());
+                    newRating: 0, message: '', confirmDisabled: false}, () => {
+                        this.getRatings(); 
+                        this.state.currentState == 'watched' ? this.props.rerenderParent() : '' 
+                    });
             }
         })
         .catch((error) => console.log(error))

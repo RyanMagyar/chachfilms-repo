@@ -113,7 +113,7 @@ class Home extends React.Component {
                 <Feed url="/api/v1/ondeck/" 
                 getNumInRotation={this.props.getNumInRotation}
                 numInRotation={this.props.numInRotation}
-                toggleRerender={this.state.toggleRerender} 
+                toggleRerender={this.state.toggleRerender}
                 rerenderParent={this.rerenderParent}
                 sortBy="suggestedby"
                 isLoggedIn={this.state.isLoggedIn}/>

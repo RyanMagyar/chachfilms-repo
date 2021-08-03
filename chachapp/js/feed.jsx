@@ -9,15 +9,16 @@ class Feed extends React.Component {
     constructor(props){
         super(props);
         this.state = { movies: [], filteredMovies: [], rerender: false, 
-        sortBy: this.props.sortBy, filterBy: this.props.filterBy};
+        sortBy: this.props.sortBy, filterBy: this.props.filterBy,
+        };
         this.sortMoviesBy = this.sortMoviesBy.bind(this);
         this.dynamicSort = this.dynamicSort.bind(this);
         this.filterMoviesBy = this.filterMoviesBy.bind(this);
+        this.filterMoviesBy = this.filterMoviesBy.bind(this);
 
     }
-      
 
-    componentDidUpdate(previousProps) {
+    componentDidUpdate(previousProps, previousState) {
         const { url } = this.props;
         if(previousProps.toggleRerender != this.props.toggleRerender){
             fetch(url)

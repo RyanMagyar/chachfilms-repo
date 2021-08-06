@@ -70,7 +70,6 @@ class Feed extends React.Component {
     filterMoviesBy(){
         const filterBy = this.props.filterBy;
         var filteredMovies = this.state.movies;
-        console.log(filterBy);
         if(filterBy == ""){
             this.setState({filteredMovies: filteredMovies});
             
@@ -110,8 +109,6 @@ class Feed extends React.Component {
         var mappedMovies = []
         if(url == '/api/v1/watched/' && filteredMovies.length < movies.length){
             mappedMovies = filteredMovies
-            console.log(filteredMovies);
-            console.log(movies);
 
         }
         else{

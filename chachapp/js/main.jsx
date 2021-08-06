@@ -5,6 +5,8 @@ import Home from './home';
 import Login from './login';
 import AddMovie from './addmovie';
 import Downloads from './downloads';
+import Profile from './profile';
+
 
 import { Route, Link, Redirect } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -63,7 +65,7 @@ class Main extends React.Component{
         }
 
         
-        this.setState({numInRotation: numInRotation}, console.log(this.state.numInRotation));
+        this.setState({numInRotation: numInRotation});
     }
 
     render(){
@@ -84,6 +86,12 @@ class Main extends React.Component{
                 )}/>
                 <Route exact path="/downloads/" render={() => (
                     userToken ? (<Downloads/>
+                    ) :(
+                        <Redirect to='/login/'/>
+                    )
+                )}/>
+                <Route exact path="/profile/" render={() => (
+                    userToken ? (<Profile/>
                     ) :(
                         <Redirect to='/login/'/>
                     )

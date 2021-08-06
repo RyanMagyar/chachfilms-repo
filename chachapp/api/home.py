@@ -23,7 +23,6 @@ def get_v1():
         "url": "/api/v1/"
     }
     user = get_jwt_identity()
-    print(user)
     return flask.jsonify(**context)
 
 @chachapp.app.route('/api/v1/<string:state>/', methods=["GET"])
@@ -37,11 +36,9 @@ def get_movies_in_state(state):
     for movie in movies:
         movie['imdbrating'] =  str(movie['imdbrating'])
         movie['filename'] = "/uploads/{}".format(movie['filename'])
-        # movie['ratings'] = get_ratings(movie['movieid'])
         ratings_returned = get_ratings_helper(movie['movieid'])
         movie['ratings'] = ratings_returned['ratings']
         movie['average'] = ratings_returned['avg']
-        print(movie['added'])
 
     context = {
         "movies": movies,
@@ -110,9 +107,6 @@ def post_rating(movieid):
     cur = chachapp.model.get_db()
     user = request.args.get('user')
     rating = request.args.get('rating')
-    print(rating)
-    print(movieid)
-    print(user)
     
     if rating.lower() == 'slept':
         rating = None

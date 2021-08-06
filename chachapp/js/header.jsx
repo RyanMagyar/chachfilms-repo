@@ -34,7 +34,7 @@ class Header extends React.Component{
         localStorage.removeItem('token');
         localStorage.removeItem('username');
         this.setState({isLoggedIn: '', user: '', showLogout: false});
-        this.props.rerenderHome()
+        this.props.rerenderHome();
     }
 
     render(){
@@ -64,11 +64,8 @@ class Header extends React.Component{
                     <Link to='/'> <img id="logo" alt='logo' src={logo}></img> </Link>
                     { this.state.isLoggedIn ? (
                         <DropdownButton bsPrefix="profileMenu" id="dropdown-basic-button" title={this.state.user}>
-                            <Dropdown.Item as={Link} to="/movies" className="navigationItem">
+                            <Dropdown.Item as={Link} to="/profile/" className="navigationItem">
                                 Profile
-                            </Dropdown.Item>
-                            <Dropdown.Item as={Link} to="/movies" className="navigationItem">
-                                Settings
                             </Dropdown.Item>
                             <Dropdown.Item onClick={() => this.setState({showLogout: true})} className="navigationItem">
                                 Logout
@@ -79,7 +76,7 @@ class Header extends React.Component{
                     )
                     }
                 </div>
-                <hr id="headerRule"></hr>
+                <hr className="headerRule"></hr>
             
 
                 <Modal centered contentClassName='watchedModal' show={this.state.showLogout} animation={false} onHide={() => this.setState({showLogout: false})}>

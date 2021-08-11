@@ -1,5 +1,6 @@
 import React from 'react';
 import ImageCropper from './imageComponents/imageCropper';
+import { Button } from 'react-bootstrap';
 
 class Profile extends React.Component{
 
@@ -10,13 +11,86 @@ class Profile extends React.Component{
         this.state = {message: '', isLoggedIn: userToken, oldPassword: '', 
                       newPassword: '', repeatNewPassword: '', successMessage: '',
                       userProfilePic: '', editor: null, scaleValue: 1, filename: '',
-                      picMessageSuccess: '', picMessageError: '',};
+                      picMessageSuccess: '', picMessageError: '', bio: '',
+                      bioErrorMessage: '', bioSuccessMessage: '', bioCharsLeft: 256,};
+
 
         this.handlePasswordSubmit = this.handlePasswordSubmit.bind(this);
         this.postNewPic = this.postNewPic.bind(this);
+        this.getBio = this.getBio.bind(this);
+        this.handleBioChange = this.handleBioChange.bind(this);
+        this.handleBioSubmit = this.handleBioSubmit.bind(this);
+    }
+
+    componentDidMount(){
+        this.getBio();
     }
 
     setEditorRef = editor => this.setState({ editor });
+    
+    handleBioSubmit(){
+       const { bio,
+            isLoggedIn } = this.state;
+
+       fetch('/api/v1/accounts/submitbio/', {
+            credentials: 'same-origin',
+            method: 'POST',
+            headers: {
+            "authorization": `Bearer ${isLoggedIn}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ bio: bio}),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    response.json().then((data) => {
+                        this.setState({bioErrorMessage: data.message})
+                    })
+                    throw Error(response.statusText);
+                } else {
+                    this.setState({
+                               bioSuccessMessage: 'Bio change succesful.',
+                               bioErrorMessage: '',});
+                }
+                return response.json();
+            })
+            .catch((error) => console.log(error))
+
+ 
+    }
+
+    handleBioChange(event){
+        var input = event.target.value;
+        if(input.length <= 256){
+            this.setState({
+                bioCharsLeft: 256 - input.length,
+                bio: input,
+            });
+        }
+    }
+
+    getBio(){
+        const { isLoggedIn } = this.state;
+         fetch('/api/v1/accounts/getbio/', {
+            credentials: 'same-origin',
+            method: 'GET',
+            headers: {
+            "authorization": `Bearer ${isLoggedIn}`,
+            'Content-Type': 'application/json',
+        },
+        })
+            .then((response) => {
+                if (!response.ok) throw Error(response.statusText);
+                return response.json();
+            })
+            .then((data) => {
+                this.setState({
+                    bio: data.bio,
+                    bioCharsLeft: 256 - data.bio.length,
+                });
+            })
+            .catch((error) => console.log(error))
+    }
 
     handlePasswordSubmit(event){
         const { newPassword } = this.state;
@@ -95,7 +169,7 @@ class Profile extends React.Component{
                 } else {
                     this.setState({
                         picMessageError: '',
-                        picMessageSuccess: 'Picture upload succseful.',
+                        picMessageSuccess: 'Picture upload successful.',
                         scaleValue: 1,
                         userProfilePic: '',
                         selectedImage: null,
@@ -150,6 +224,16 @@ class Profile extends React.Component{
                         />
                         <h1 className="loginError">{this.state.picMessageError}</h1>
                         <h1 className="passwordSuccess">{this.state.picMessageSuccess}</h1>
+                    </div>
+                    <hr className="headerRule"></hr>
+                    <div className="editBioWrapper">
+                        <h1 className="loginHeading">Edit User Bio</h1>
+                        <textarea className="bioInput" type="text" value={this.state.bio} onChange={this.handleBioChange}></textarea>
+                        <h2 className="bioCharsLeft">You have {this.state.bioCharsLeft} characters left.</h2>
+                        <Button onClick={this.handleBioSubmit} className="bioBtn">Save Bio</Button>
+                        <h1 className="loginError">{this.state.bioErrorMessage}</h1>
+                        <h1 className="passwordSuccess">{this.state.bioSuccessMessage}</h1>
+                        <div className="gap-30"></div>
                     </div>
                 </div>
             );

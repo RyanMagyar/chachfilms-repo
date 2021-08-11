@@ -85,6 +85,47 @@ def post_pic():
     return flask.jsonify(**context) 
     
 
+@chachapp.app.route('/api/v1/accounts/getbio/', methods=['GET'])
+@jwt_required()
+def get_bio():
+    """Return bio of user."""
+    cur = chachapp.model.get_db()
+    
+    user = get_jwt_identity()
+    username = user['username']
+
+    cur.execute("""SELECT bio FROM reviewers
+                   WHERE username = %s""",(username,))
+    
+    user = cur.fetchone()
+    
+    context = {'bio': user['bio'],
+               'status_code': 200}
+
+    return flask.jsonify(**context) 
+    
+
+@chachapp.app.route('/api/v1/accounts/submitbio/', methods=['POST'])
+@jwt_required()
+def post_bio():
+    """Update bio of user."""
+    cur = chachapp.model.get_db()
+    
+    user = get_jwt_identity()
+    username = user['username']
+    request_data = request.get_json()
+    bio = request_data['bio']
+
+    cur.execute("""Update reviewers SET bio = %s
+                   WHERE username = %s""", (bio, username,))
+    
+    
+    context = {'message': 'Bio update successful',
+               'status_code': 200}
+
+    return flask.jsonify(**context) 
+
+
 @chachapp.app.route('/api/v1/accounts/password/', methods=['POST'])
 @jwt_required()
 def accounts():
@@ -153,7 +194,25 @@ def update_password():
 
     return flask.jsonify(**context)
 
+@chachapp.app.route('/api/v1/reviewers/', methods=['GET'])
+def get_reviewers():
+    """Get reviewers info."""
+    cur = chachapp.model.get_db()
+    
+    cur.execute("""
+                SELECT * FROM reviewers
+                """)
+    reviewers = cur.fetchall()
 
+    for reviewer in reviewers:
+        reviewer['filename'] =  "/uploads/{}".format(reviewer['filename'])
+        
+     
+    context = {'reviewers': reviewers,
+                'status_code': 201}
+
+    return flask.jsonify(**context)
+    
 
 def check_password(hashword, password):
     """Check if password matches db entry."""

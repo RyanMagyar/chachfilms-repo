@@ -1,14 +1,14 @@
-INSERT INTO reviewers(username, fullname, filename, password)
-VALUES ('Ryan', 'Ryan Magyar','e1a7c5c32973862ee15173b0259e3efdb6a391af.jpg','sha512$0829205c90664b8dba60b23771f4079f$e3508d265367aca357863a4ecc0fb53ecc6bccf40b2a9ca891c749799064bdf9bb7b8b13601c89a03c92cc8e09adbc2336797a1cd0471b901121acf1eaa038f4');
+INSERT INTO reviewers(username, fullname, filename, password, bio)
+VALUES ('Ryan', 'Ryan Magyar','e1a7c5c32973862ee15173b0259e3efdb6a391af.jpg','sha512$0829205c90664b8dba60b23771f4079f$e3508d265367aca357863a4ecc0fb53ecc6bccf40b2a9ca891c749799064bdf9bb7b8b13601c89a03c92cc8e09adbc2336797a1cd0471b901121acf1eaa038f4', '');
 
-INSERT INTO reviewers(username, fullname, filename, password)
-VALUES ('Marcus', 'Marcus Cook','505083b8b56c97429a728b68f31b0b2a089e5113.jpg','sha512$0829205c90664b8dba60b23771f4079f$e3508d265367aca357863a4ecc0fb53ecc6bccf40b2a9ca891c749799064bdf9bb7b8b13601c89a03c92cc8e09adbc2336797a1cd0471b901121acf1eaa038f4');
+INSERT INTO reviewers(username, fullname, filename, password, bio)
+VALUES ('Marcus', 'Marcus Cook','505083b8b56c97429a728b68f31b0b2a089e5113.jpg','sha512$0829205c90664b8dba60b23771f4079f$e3508d265367aca357863a4ecc0fb53ecc6bccf40b2a9ca891c749799064bdf9bb7b8b13601c89a03c92cc8e09adbc2336797a1cd0471b901121acf1eaa038f4', '');
 
-INSERT INTO reviewers(username, fullname, filename, password)
-VALUES ('Justin', 'Justin Kainz', '5ecde7677b83304132cb2871516ea50032ff7a4f.jpg', 'sha512$0829205c90664b8dba60b23771f4079f$e3508d265367aca357863a4ecc0fb53ecc6bccf40b2a9ca891c749799064bdf9bb7b8b13601c89a03c92cc8e09adbc2336797a1cd0471b901121acf1eaa038f4');
+INSERT INTO reviewers(username, fullname, filename, password, bio)
+VALUES ('Justin', 'Justin Kainz', '5ecde7677b83304132cb2871516ea50032ff7a4f.jpg', 'sha512$0829205c90664b8dba60b23771f4079f$e3508d265367aca357863a4ecc0fb53ecc6bccf40b2a9ca891c749799064bdf9bb7b8b13601c89a03c92cc8e09adbc2336797a1cd0471b901121acf1eaa038f4', '');
 
-INSERT INTO reviewers(username, fullname, filename, password)
-VALUES ('Jon', 'Jonathan Cook','73ab33bd357c3fd42292487b825880958c595655.jpg', 'sha512$0829205c90664b8dba60b23771f4079f$e3508d265367aca357863a4ecc0fb53ecc6bccf40b2a9ca891c749799064bdf9bb7b8b13601c89a03c92cc8e09adbc2336797a1cd0471b901121acf1eaa038f4');
+INSERT INTO reviewers(username, fullname, filename, password, bio)
+VALUES ('Jon', 'Jonathan Cook','73ab33bd357c3fd42292487b825880958c595655.jpg', 'sha512$0829205c90664b8dba60b23771f4079f$e3508d265367aca357863a4ecc0fb53ecc6bccf40b2a9ca891c749799064bdf9bb7b8b13601c89a03c92cc8e09adbc2336797a1cd0471b901121acf1eaa038f4', '');
 
 INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
 VALUES ('0078748', 'Alien', 1979, 'Ridley Scott', 'Alien1979coverphoto.jpg',ARRAY ['Sci-Fi', 'Horror'], 8.4, 'watched', 'Jon');

@@ -131,6 +131,7 @@ class Feed extends React.Component {
                         added={movie.added}
                         ratings={movie.ratings}
                         average={movie.average}
+                        genres={movie.genres}
                         rerenderParent={this.props.rerenderParent}
                         numInRotation={this.props.numInRotation}
                         isLoggedIn={this.props.isLoggedIn}

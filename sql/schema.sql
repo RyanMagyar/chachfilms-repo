@@ -17,6 +17,7 @@ CREATE TABLE reviewers(
   fullname VARCHAR(40) NOT NULL,
   filename VARCHAR(128) NOT NULL,
   password CHARACTER(256) NOT NULL,
+  bio VARCHAR(256),
   PRIMARY KEY(username)
 );
 

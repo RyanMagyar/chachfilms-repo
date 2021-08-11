@@ -6,6 +6,8 @@ import Login from './login';
 import AddMovie from './addmovie';
 import Downloads from './downloads';
 import Profile from './profile';
+import Reviewers from './reviewers';
+import MoviePage from './moviePage';
 
 
 import { Route, Link, Redirect } from 'react-router-dom';
@@ -77,7 +79,7 @@ class Main extends React.Component{
                 rerenderHome={this.rerenderHome}/>
                 <Route exact path="/watched/" render={(props) => (<Watched getNumInRotation={this.getNumInRotation}
                 numInRotation={this.state.numInRotation}/>)}/>
-                <Route exact path="/reviewers/" component={Watched}/>
+                <Route exact path="/reviewers/" component={Reviewers}/>
                 <Route exact path="/addmovie/" render={() => (
                     userToken ? (<AddMovie/>
                     ) :(
@@ -97,8 +99,10 @@ class Main extends React.Component{
                     )
                 )}/>
                 <Route exact path="/login/" render={(props) => (<Login rerenderHeader={this.rerenderHeader}/>)}/> 
+                <Route exact path="/m/:movieid/" component={MoviePage}/> 
                 <Route exact path="/" render={(props) => (<Home getNumInRotation={this.getNumInRotation}
                 numInRotation={this.state.numInRotation} toggleHomeRerender={this.state.toggleHomeRerender}/>)}/>
+                <Route render={() => <Redirect to='/' />} />
             </div>
         );
     }

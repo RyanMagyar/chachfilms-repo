@@ -1,6 +1,6 @@
 import React from 'react';
-import logo from '../static/images/chachfilmsHeader.png'
-import {Link} from 'react-router-dom'
+import logo from '../static/images/chachfilmsHeader.png';
+import {Link} from 'react-router-dom';
 import { Button } from "react-bootstrap";
 import { Modal } from "react-bootstrap";
 import { DropdownButton } from 'react-bootstrap';
@@ -51,7 +51,7 @@ class Header extends React.Component{
                         <Dropdown.Item as={Link} to="/watched/" className="navigationItem">
                             Watched Movies
                         </Dropdown.Item>
-                        <Dropdown.Item as={Link} to="/movies" className="navigationItem">
+                        <Dropdown.Item as={Link} to="/reviewers/" className="navigationItem">
                             Reviewers
                         </Dropdown.Item>
                         <Dropdown.Item as={Link} to="/movies" className="navigationItem">

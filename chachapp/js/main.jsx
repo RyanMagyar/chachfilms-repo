@@ -24,7 +24,7 @@ class Main extends React.Component{
             numInRotation: {'Ryan': -1,
             'Justin': -1, 'Marcus': -1, 'Jon': -1}
         };
-
+        
         this.rerenderHeader = this.rerenderHeader.bind(this);
         this.rerenderHome = this.rerenderHome.bind(this);
         this.getNumInRotation = this.getNumInRotation.bind(this);
@@ -99,7 +99,8 @@ class Main extends React.Component{
                     )
                 )}/>
                 <Route exact path="/login/" render={(props) => (<Login rerenderHeader={this.rerenderHeader}/>)}/> 
-                <Route exact path="/m/:movieid/" component={MoviePage}/> 
+                <Route exact path="/m/:movieid/" render={(props) => (<MoviePage {...props} getNumInRotation={this.getNumInRotation}
+                 numInRotation={this.state.numInRotation}/>)}/> 
                 <Route exact path="/" render={(props) => (<Home getNumInRotation={this.getNumInRotation}
                 numInRotation={this.state.numInRotation} toggleHomeRerender={this.state.toggleHomeRerender}/>)}/>
                 <Route render={() => <Redirect to='/' />} />

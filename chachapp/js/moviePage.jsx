@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import FilmLoader from '../static/images/filmLoader.gif'
 import { Button, ButtonGroup, ToggleButton } from "react-bootstrap";
 import { Modal } from "react-bootstrap";
+import { Redirect } from 'react-router';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -9,18 +10,23 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 class MoviePage extends React.Component {
     constructor(props) {
         super(props);
-        const movieState = this.props.location.state;
-        const {numInRotation} = this.props.location.state;
-        this.state = { currentState: movieState, showWatched: false, fade: false,
-         showDeleted: false, isLoggedIn: this.props.location.state.isLoggedIn, showInRotation: false,
-         showOnDeck: false, showWarning: false, deleteChecked: false, ratings: this.props.location.state.ratings, 
-         average: this.props.location.state.average, showRating: false, newRating: 0, message: '', confirmDisabled: false, filmLoading: false,
-         backdrop: true, genres: this.props.location.state.genres,
+        const numInRotation = this.props.numInRotation;
+        const tokenString = localStorage.getItem('token');
+        const userToken = JSON.parse(tokenString);
+        console.log(this.props)
+        const movieid = this.props.match.params.movieid;
+
+        this.state = { movieid: movieid, currentState: '', showWatched: false, fade: false,
+         showDeleted: false, isLoggedIn: userToken, showInRotation: false, movieState: '',
+         showOnDeck: false, showWarning: false, deleteChecked: false, ratings: [], 
+         average: 0, showRating: false, newRating: 0, message: '', confirmDisabled: false, filmLoading: false,
+         backdrop: true, genres: [], deleteClicked: false, numInRotation: numInRotation,
         }
         this.handleDeleteClick = this.handleDeleteClick.bind(this);
         this.handleWatchedClick = this.handleStateButtonClick.bind(this);
         this.getRatings = this.getRatings.bind(this);
         this.handleSubmitRating = this.handleSubmitRating.bind(this);
+        this.getMovieInfo = this.getMovieInfo.bind(this);
 
 
     }
@@ -28,12 +34,43 @@ class MoviePage extends React.Component {
 
     componentDidMount() {
 
-        const { movieState } = this.props.location.state;
-        this.setState({currentState: movieState, show: false,});
+        this.getMovieInfo();
+    }
+
+    getMovieInfo(){
+        const movieid = this.props.match.params.movieid;
+        const url = `/api/v1/m/${movieid}/info`
+
+        fetch(url, {
+            credentials: 'same-origin',
+            method: 'GET',
+        })
+        .then((response) => {
+            if (!response.ok) throw Error(response.statusText);
+            
+            return response.json();
+        })
+        .then((data) => {
+            this.setState({ratings: data.movie.ratings,
+                           average: data.movie.average,
+                           movieState: data.movie.state,
+                           imdbrating: data.movie.imdbrating,
+                           cover: data.movie.filename,
+                           title: data.movie.title,
+                           suggestedby: data.movie.suggestedby,
+                           year: data.movie.year,
+                           director: data.movie.director,
+                           currentState: data.movie.state,
+                           show: false,
+                          });
+        })
+        .catch((error) => console.log(error))
+ 
+        
     }
 
     getRatings(){
-        const { movieid } = this.props.location.state;
+        const movieid = this.state.movieid;
         const setStateUrl = `/api/v1/m/${movieid}/ratings/`;
 
         fetch(setStateUrl, {
@@ -54,7 +91,7 @@ class MoviePage extends React.Component {
     }
 
     handleDeleteClick(){
-        const { movieid } = this.props.location.state;
+        const movieid = this.state.movieid;
         const setStateUrl = `/api/v1/m/${movieid}/delete/?deleteChecked=${this.state.deleteChecked}`;
         const {isLoggedIn} = this.state;
         const pastState = this.state.currentState;
@@ -71,27 +108,26 @@ class MoviePage extends React.Component {
                this.setState({currentState: "deleted",
                               deleteChecked: false,
                               filmLoading: false,
-                              backdrop: true});
-                if(pastState != 'watched') this.props.location.state.rerenderParent();
-
-
+                              backdrop: true,
+                              deleteClicked: true,
+                              showDeleted: false});
             }
         })
-        .catch((error) => console.log(error))
-        
+        .catch((error) => console.log(error)) 
     }
 
-    componentDidUpdate(previousProps){
-        if(previousProps.location.state.isLoggedIn != this.props.location.state.isLoggedIn){
-            this.setState({isLoggedIn: this.props.location.state.isLoggedIn});
+    componentDidUpdate(prevProps, previousState){
+        const tokenString = localStorage.getItem('token');
+        const userToken = JSON.parse(tokenString);
+        if(previousState.isLoggedIn != userToken){
+            this.setState({isLoggedIn: userToken});
         }
     }
 
     handleStateButtonClick(newState){
-        const { movieid } = this.props.location.state;
+        const { movieid, isLoggedIn, currentState} = this.state;
         const setStateUrl = `/api/v1/m/${movieid}/setstate/?state=${newState}`;
-        const {isLoggedIn} = this.state;
-        const pastState = this.state.currentState;
+
         fetch(setStateUrl, {
             credentials: 'same-origin',
             method: 'PUT',
@@ -101,8 +137,17 @@ class MoviePage extends React.Component {
             if (!response.ok) {
                  throw Error(response.statusText);
             } else {
-                this.setState({currentState: newState});
-                if(pastState != 'watched') this.props.location.state.rerenderParent();
+                this.setState({currentState: newState,
+                               showWatched: false,
+                               showInRotation: false,
+                               showOnDeck: false,}, () => {
+                                   if(currentState == 'inrotation') {
+                                       console.log(this.state.numInRotation);
+                                       const newNumInRotation = this.state.numInRotation[this.state.suggestedby] - 1;
+                                       console.log(newNumInRotation);
+                                       this.setState({numInRotation: newNumInRotation});
+                                   }
+                               });
             }
         })
         .catch((error) => console.log(error))
@@ -138,10 +183,9 @@ class MoviePage extends React.Component {
     };
 
     handleSubmitRating(){
-        const { newRating } = this.state;
-        const { movieid } = this.props.location.state;
+        const { newRating, movieid, isLoggedIn } = this.state;
+
         const user = localStorage.getItem('username');
-        const { isLoggedIn } = this.state;
         const ratingUrl = `/api/v1/m/${movieid}/rate/?user=${user}&rating=${newRating}`;
 
         fetch(ratingUrl, {
@@ -156,7 +200,6 @@ class MoviePage extends React.Component {
                 this.setState({showRating: false, 
                     newRating: 0, message: '', confirmDisabled: false}, () => {
                         this.getRatings(); 
-                        this.state.currentState == 'watched' ? this.props.location.state.rerenderParent() : '' 
                     });
             }
         })
@@ -166,21 +209,16 @@ class MoviePage extends React.Component {
     
 
     render() {
-        const { imdbrating } = this.props.location.state;
-        const { cover} = this.props.location.state;
-        const { title } = this.props.location.state;
-        const { suggestedby } = this.props.location.state;
-        const { year } = this.props.location.state;
-        const { director } = this.props.location.state;
-        const { movieid } = this.props.location.state;
+        const { imdbrating, cover, title,
+        suggestedby, year, director, movieid,
+        movieState } = this.state;
         const { currentState } = this.state;
-        const {movieState} = this.props.location.state;
         const { showWatched } = this.state;
         const { showDeleted } = this.state;
         const { showOnDeck } = this.state;
         const { showWarning } = this.state;
         const { showInRotation } = this.state;
-        const { numInRotation } = this.props.location.state;
+        const { numInRotation } = this.state.numInRotation;
         const {fade} = this.state
         const { isLoggedIn } = this.state;
         const { ratings } = this.state;
@@ -189,17 +227,9 @@ class MoviePage extends React.Component {
         const { newRating } = this.state;
         const { filmLoading } = this.state;
         const { backdrop } = this.state;
-        const { genres } = this.state;
+        const { genres } = this.state; 
 
-
-
-
-        if(currentState !== movieState){
-            return(
-                <></>
-            )
-        }
-
+        if(this.state.deleteClicked) return(<Redirect to="/"/>);
 
         return(
             <div className="moviePageDiv">
@@ -240,7 +270,7 @@ class MoviePage extends React.Component {
                     <div className="moviePageButtons">
                         {isLoggedIn && <Button variant="danger" className="deletePageButton" onClick={ () => this.setState({showDeleted: true})}>Delete</Button>}
                         {(isLoggedIn && (currentState == 'ondeck' || currentState == 'watched')) && <Button variant="success" className="onDeckPageButton"onClick={ () => {
-                            const numInRotation = this.props.location.state.numInRotation;
+                            const numInRotation = this.state.numInRotation;
                                 if(numInRotation[suggestedby] >= 2){
                                     this.setState({showWarning: true})} else {
                                     this.setState({showInRotation: true})

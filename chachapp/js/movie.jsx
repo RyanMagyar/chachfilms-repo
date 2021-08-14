@@ -205,15 +205,7 @@ class Movie extends React.Component {
         return(
             <div className="movieDiv">
                 <h1 className="movieTitle">{title}</h1>
-                    <Link to={{ pathname: `/m/${movieid}/`, state: { cover: cover, imdbrating: imdbrating, title: title, suggestedby: suggestedby,
-                        year: year, director: director, movieid: movieid, numInRotation: numInRotation,
-                        movieState: this.state.currentState, showWatched: showWatched, fade: false,
-                        showDeleted: showDeleted, isLoggedIn: this.state.isLoggedIn, showInRotation: showInRotation,
-                        showOnDeck: showOnDeck, showWarning: showWarning, deleteChecked: this.state.deleteChecked, ratings: this.state.ratings, 
-                        average: this.state.average, showRating: showRating, newRating: 0, message: '', 
-                        confirmDisabled: this.state.confirmDisabled, filmLoading: this.state.filmLoading, backdrop: this.state.backdrop,
-                        genres: this.props.genres,
-                        }}}>
+                    <Link to={{ pathname: `/m/${movieid}/`}}>
                         <img className="movieCover" alt="" src={cover} />
                     </Link>
                 <div className="suggestAndRate">

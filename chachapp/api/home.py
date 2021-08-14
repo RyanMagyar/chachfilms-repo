@@ -46,6 +46,27 @@ def get_movies_in_state(state):
 
     return flask.jsonify(**context)
 
+@chachapp.app.route('/api/v1/m/<string:movieid>/info/', methods=['GET'])
+def get_movie_info(movieid):
+    """Return movie info for movieid."""
+    cur = chachapp.model.get_db()
+    cur.execute("""SELECT * FROM movies m
+                   WHERE m.movieid = %s""", (movieid,))
+    movie = cur.fetchone()
+
+    movie['imdbrating'] = str(movie['imdbrating'])
+    movie['filename'] = "/uploads/{}".format(movie['filename'])
+    ratings_returned = get_ratings_helper(movie['movieid'])
+    movie['ratings'] = ratings_returned['ratings']
+    movie['average'] = ratings_returned['avg']
+    
+    context = {
+        "movie" : movie,
+    }
+    
+    return flask.jsonify(**context)
+     
+
 @chachapp.app.route('/api/v1/m/<string:movieid>/ratings/', methods=["GET"])
 def get_ratings(movieid):
     """Return ratings for movieid."""

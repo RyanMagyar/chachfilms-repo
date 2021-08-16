@@ -61,8 +61,21 @@ VALUES ('0114746', '12 Monkeys', 1995, 'Terry Gilliam', '12Monkeys1995coverphoto
 INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
 VALUES ('0118971', 'The Devil''s Advocate', 1997, 'Taylor Hackford', 'TheDevil''sAdvocate1997coverphoto.jpg', ARRAY ['Drama', 'Mystery', 'Thriller'], 7.5, 'ondeck', 'Jon');
 
+INSERT INTO comments(owner, movieid, text)
+VALUES ('Ryan', '0114746', 'This movie sucks!');
+
+INSERT INTO comments(owner, movieid, text)
+VALUES ('Jon', '0114746', 'I love this movie.');
+
+INSERT INTO comments(owner, movieid, text)
+VALUES ('Justin', '0114746', 'This movie was fantastic. I really liked Keanu Reeves, but Al Pacino was a bit of a bore. Overall it was good.');
+
+INSERT INTO comments(owner, movieid, text)
+VALUES ('Marcus', '0114746', 'Jon you need to pick better movies.');
+
 INSERT INTO ratings(reviewer, movieid, rating)
 VALUES ('Ryan', '0078748', 8);
+
 
 INSERT INTO ratings(reviewer, movieid, rating)
 VALUES ('Justin', '0078748', 7);

@@ -59,6 +59,7 @@ def get_movie_info(movieid):
     ratings_returned = get_ratings_helper(movie['movieid'])
     movie['ratings'] = ratings_returned['ratings']
     movie['average'] = ratings_returned['avg']
+    movie['genres'] = movie['genres']
     
     context = {
         "movie" : movie,
@@ -66,6 +67,92 @@ def get_movie_info(movieid):
     
     return flask.jsonify(**context)
      
+    
+@chachapp.app.route('/api/v1/m/<string:movieid>/comments/', methods=['POST'])
+@jwt_required()
+def post_movie_comment(movieid):
+    """Return movie info for movieid."""
+    cur = chachapp.model.get_db()
+
+    user = get_jwt_identity()
+    username = user['username']
+    request_data = request.get_json()
+    text = request_data['commentText']
+    
+    cur.execute(""" INSERT INTO comments (owner, movieid, text)
+                    VALUES (%s, %s, %s)
+                """, (username, movieid, text))
+     
+    context = {'message': 'Comment posted successful',
+               'status_code': 200}
+
+    return flask.jsonify(**context) 
+    
+
+@chachapp.app.route('/api/v1/m/<string:movieid>/comments/', methods=['GET'])
+def get_movie_comments(movieid):
+    """Return comments for movieid."""
+    cur = chachapp.model.get_db()
+ 
+    cur.execute(""" SELECT c.commentid, c.owner, c.text, r.filename, c.added
+                    FROM comments c
+                    JOIN reviewers r ON r.username = c.owner
+                    WHERE movieid = %s
+                    ORDER BY added ASC
+                """, (movieid,))
+     
+    comments = cur.fetchall()
+
+    for comment in comments:    
+        comment['filename'] = "/uploads/{}".format(comment['filename'])
+        comment['added'] = "{}".format(comment['added'])
+    
+    
+    context = {'comments': comments,
+               'status_code': 200}
+
+    return flask.jsonify(**context) 
+
+@chachapp.app.route('/api/v1/m/<string:movieid>/comments/<string:commentid>/', methods=["DELETE"])
+@jwt_required()
+def delete_movie_comment(movieid, commentid):
+    """Delete comment with commentid."""
+    cur = chachapp.model.get_db() 
+    
+    
+    user = get_jwt_identity()
+    username = user['username']
+    cur.execute(""" SELECT FROM comments
+                    WHERE commentid = %s AND owner = %s AND movieid = %s
+                """, (commentid, username, movieid))
+    
+    comments = cur.fetchall()
+    
+    if len(comments) != 1:
+        response = {'movieid': movieid,
+                    'commentid': commentid,
+                    'user': username,
+                    'message': 'Forbidden', 
+                    'status_code': 403}
+        return response, 403
+        
+    
+    cur.execute(""" DELETE FROM comments
+                    WHERE commentid = %s
+                """, (commentid,))
+    count = cur.rowcount
+    
+    if count != 1:
+        response = {'movieid': movieid,
+                    'message': 'Invalid commentid', 
+                    'status_code': 400}
+        return response, 400
+    
+    response = {'message': 'comment deleted succesfully',
+                'status_code': 204}
+
+    return response, 204 
+
 
 @chachapp.app.route('/api/v1/m/<string:movieid>/ratings/', methods=["GET"])
 def get_ratings(movieid):

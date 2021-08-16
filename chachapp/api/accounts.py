@@ -194,6 +194,7 @@ def update_password():
 
     return flask.jsonify(**context)
 
+
 @chachapp.app.route('/api/v1/reviewers/', methods=['GET'])
 def get_reviewers():
     """Get reviewers info."""

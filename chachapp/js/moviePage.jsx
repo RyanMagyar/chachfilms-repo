@@ -3,6 +3,7 @@ import FilmLoader from '../static/images/filmLoader.gif'
 import { Button, ButtonGroup, ToggleButton } from "react-bootstrap";
 import { Modal } from "react-bootstrap";
 import { Redirect } from 'react-router';
+import Comment from './comment';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -20,13 +21,17 @@ class MoviePage extends React.Component {
          showDeleted: false, isLoggedIn: userToken, showInRotation: false, movieState: '',
          showOnDeck: false, showWarning: false, deleteChecked: false, ratings: [], 
          average: 0, showRating: false, newRating: 0, message: '', confirmDisabled: false, filmLoading: false,
-         backdrop: true, genres: [], deleteClicked: false, numInRotation: numInRotation,
+         backdrop: true, genres: [], deleteClicked: false, numInRotation: numInRotation, comments: [],
+         commentText: '', commentCharsLeft: 1024,
         }
         this.handleDeleteClick = this.handleDeleteClick.bind(this);
         this.handleWatchedClick = this.handleStateButtonClick.bind(this);
         this.getRatings = this.getRatings.bind(this);
         this.handleSubmitRating = this.handleSubmitRating.bind(this);
         this.getMovieInfo = this.getMovieInfo.bind(this);
+        this.getComments = this.getComments.bind(this);
+        this.handleCommentChange = this.handleCommentChange.bind(this);
+        this.handleCommentSubmit = this.handleCommentSubmit.bind(this);
 
 
     }
@@ -35,8 +40,69 @@ class MoviePage extends React.Component {
     componentDidMount() {
 
         this.getMovieInfo();
-    }
+        this.getComments();
+    };
 
+    handleCommentSubmit(){
+       const { commentText,
+            movieid, isLoggedIn } = this.state;
+
+       fetch(`/api/v1/m/${movieid}/comments/`, {
+            credentials: 'same-origin',
+            method: 'POST',
+            headers: {
+            "authorization": `Bearer ${isLoggedIn}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ commentText: commentText}),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw Error(response.statusText);
+                } else {
+                    this.setState({
+                               commentText: '',}, this.getComments);
+                }
+                return response.json();
+            })
+            .catch((error) => console.log(error))
+
+ 
+    };
+
+    handleCommentChange(event){
+        var input = event.target.value;
+        if(input.length <= 1024){
+            this.setState({
+                commentCharsLeft: 1024 - input.length,
+                commentText: input,
+            });
+        }
+    };
+
+    getComments(){
+        const movieid = this.props.match.params.movieid;
+        const url = `/api/v1/m/${movieid}/comments/`;
+
+        fetch(url, {
+            credentials: 'same-origin',
+            method: 'GET',
+        })
+        .then((response) => {
+            if (!response.ok) throw Error(response.statusText);
+            
+            return response.json();
+        })
+        .then((data) => {
+            console.log(data.comments)
+            this.setState({
+                            comments: data.comments
+                          });
+        })
+        .catch((error) => console.log(error))
+ 
+
+    }
     getMovieInfo(){
         const movieid = this.props.match.params.movieid;
         const url = `/api/v1/m/${movieid}/info`
@@ -62,6 +128,8 @@ class MoviePage extends React.Component {
                            director: data.movie.director,
                            currentState: data.movie.state,
                            show: false,
+                           genres: data.movie.genres,
+                           added: data.movie.added,
                           });
         })
         .catch((error) => console.log(error))
@@ -228,10 +296,14 @@ class MoviePage extends React.Component {
         const { filmLoading } = this.state;
         const { backdrop } = this.state;
         const { genres } = this.state; 
+        const { comments} = this.state;
+
 
         if(this.state.deleteClicked) return(<Redirect to="/"/>);
 
         return(
+            <div>
+
             <div className="moviePageDiv">
                 <div className="moviePageCoverDiv">
                     <img className="moviePageCover" alt="" src={cover} />
@@ -282,7 +354,7 @@ class MoviePage extends React.Component {
 
                     </div>
                 </div>
-                <Modal centered contentClassName='watchedModal' show={showWatched} animation={false} onHide={() => this.setState({showWatched: false})}>
+               <Modal centered contentClassName='watchedModal' show={showWatched} animation={false} onHide={() => this.setState({showWatched: false})}>
                     <Modal.Header bsPrefix="modalHeader" closeButton>
                         <div className="modalHeaderLeft"></div>
                         <Modal.Title bsPrefix="modalTitle">Are You Sure?</Modal.Title>
@@ -410,6 +482,28 @@ class MoviePage extends React.Component {
 
                 
             </div>
+            <div className="commentsDiv">
+                    {comments.length ? comments.map((comment) => (
+                        <Comment
+                            owner = {comment.owner}
+                            text = {comment.text}
+                            filename = {comment.filename}
+                            commentid = {comment.commentid}
+                            movieid = {this.state.movieid}
+                            added = {comment.added}
+                        /> 
+                    )): <h2 className="noComments">No comments yet.</h2>}
+                    { isLoggedIn && <div className="submitCommentDiv">
+                        <h2 className="submitCommentTitle">Submit a comment</h2>
+                        <textarea className="commentInput" type="text"
+                         value={this.state.commentText} onChange={this.handleCommentChange}></textarea>
+                        <Button onClick={this.handleCommentSubmit} className="submitCommentBtn">Submit Comment</Button>
+                        <h2 className="bioCharsLeft">You have {this.state.commentCharsLeft} characters left.</h2>
+                    </div> }
+            </div>
+             
+            </div>
+ 
         )
     }
 }

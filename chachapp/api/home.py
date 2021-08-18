@@ -211,7 +211,7 @@ def get_roll(picked_last):
 
 @chachapp.app.route('/api/v1/m/<string:movieid>/rate/', methods=["POST"])
 def post_rating(movieid):
-    """Rate movieid with given rating."""
+    """Rate movieid with given rating.""" 
     cur = chachapp.model.get_db()
     user = request.args.get('user')
     rating = request.args.get('rating')
@@ -305,13 +305,16 @@ def add_movie(user):
     new_movie = request.get_json()
     new_movie = new_movie['movie']
 
-    radarr_reponse = addToRadarr(new_movie)
+    download_checked = request.args.get('downloadChecked')
+    print(download_checked)
+    if download_checked == 'true':
+        radarr_reponse = addToRadarr(new_movie)
     
-    if radarr_reponse > 299:
-        response = {'movie': new_movie['title'],
-                    'message': 'Radarr could not be reached', 
-                    'status_code': radarr_reponse}
-        return response, radarr_reponse
+        if radarr_reponse > 299:
+            response = {'movie': new_movie['title'],
+                        'message': 'Radarr could not be reached', 
+                        'status_code': radarr_reponse}
+            return response, radarr_reponse
     
     ia = IMDb()
     movie = ia.get_movie(new_movie['imdbId'].replace('tt',''))
@@ -360,6 +363,26 @@ def search_movie():
     }
     return flask.jsonify(**context)
 
+    
+@chachapp.app.route('/api/v1/getMovieIds/', methods=["GET"])
+#@jwt_required()
+def get_movieIds():
+    """Get all movieIds."""
+    
+    cur = chachapp.model.get_db()
+    print('movieids')
+    cur.execute("""
+                SELECT movieid FROM movies""")
+    
+    movieids = cur.fetchall()
+    
+    context = {
+        "movieids": movieids,
+    }
+    return flask.jsonify(**context)
+    
+    
+    
 @chachapp.app.route('/api/v1/downloads/', methods=["GET"])
 @jwt_required()
 def get_downloads():

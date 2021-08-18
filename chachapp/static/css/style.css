@@ -174,9 +174,14 @@ body {
 }
 .watchedModal {
     width:550px;
-    height: 200px;
+    height: 350px;
     margin-top: auto;
     margin-bottom: auto;
+}
+
+.addMovieText{
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .deletedModal {
@@ -995,6 +1000,13 @@ html{
     height: 100px;
     font-size: 16pt;
     margin-bottom: 10px;
+}
+
+.deleteCommentModal {
+    width: 550px;
+    height: 200px;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 @media (max-width: 1000px) {

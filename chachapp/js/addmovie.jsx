@@ -19,7 +19,11 @@ class AddMovie extends React.Component{
         this.state = {query: '', results: {}, loading: false,
          message: '', showAddMovie: false, currentResult: {},
          isLoggedIn: userToken, filmLoading: false, backdrop: true,
-         user: localStorage.getItem('username'), showAlert: true};
+         user: localStorage.getItem('username'), showAlert: true, downloadChecked: false,
+         movieids: [],};
+
+
+        this.getMovieIds = this.getMovieIds.bind(this);
         this.handleOnInputChange = this.handleOnInputChange.bind(this);
         this.fetchSearchResults = this.fetchSearchResults.bind(this);
         this.handleAddMovie = this.handleAddMovie.bind(this);
@@ -27,13 +31,15 @@ class AddMovie extends React.Component{
 
     }
 
+    componentDidMount(){
+        this.getMovieIds();
+    }
+
     handleAddMovie(){
         const {isLoggedIn, 
             currentResult,
-            user} = this.state;
-        const addMovieUrl = `/api/v1/u/${user}/addmovie/`;
-
-
+            user, downloadChecked} = this.state;
+        const addMovieUrl = `/api/v1/u/${user}/addmovie/?downloadChecked=${downloadChecked}`;
         
         fetch(addMovieUrl, {
             credentials: 'same-origin',
@@ -48,19 +54,46 @@ class AddMovie extends React.Component{
              throw Error(response.statusText);
                 } else {
                 let newCurrentResult = currentResult
-                
+                const movieid = currentResult.imdbId.replace('tt','');
+                var newMovieIds = this.state.movieids;
+                newMovieIds.push(movieid);
                this.setState({showAddMovie: false, 
                               filmLoading: false,
                               backdrop: true,
                               currentResult: {},
                               results: {},
                               query: '',
-                              message: 'Movie added succesfully!'
+                              message: 'Movie added succesfully!',
+                              movieids: newMovieIds,
                             });
 
             }
         })
         .catch((error) => console.log(error))
+    }
+
+    getMovieIds(){
+        const {isLoggedIn,} = this.state;
+        const getMovieIdsUrl = `/api/v1/getMovieIds/`;
+
+        axios
+        .get(getMovieIdsUrl, 
+        {
+         credentials: 'same-origin',
+         method: 'GET',
+         headers: {
+                "authorization": `Bearer ${isLoggedIn}`,
+                'Content-Type': 'application/json'}})
+        .then((response) => {
+            var stringArray = response.data.movieids.map( movieid => movieid['movieid'])
+            this.setState({
+                movieids: stringArray,
+            });
+        })
+        .catch((error) => {
+           console.log(error);
+        });
+        
     }
 
     handleOnInputChange = (e) => {
@@ -115,7 +148,8 @@ class AddMovie extends React.Component{
     };
 
     renderSearchResults = () => {
-        const {results} = this.state;
+        const {results, movieids} = this.state;
+        console.log(movieids);
         if (Object.keys(results).length && results.length) {
             return (
                 <div className="results-container">
@@ -130,13 +164,18 @@ class AddMovie extends React.Component{
                                 <div className="resultContent">
                                     <div className="resultHeader">
                                         <h6 className="resultTitle">{result.title}</h6>
-                                        {/*result.folderName ? <Button className="addMovieButton" variant="info">Downloaded</Button>
-                                        : <Button variant="success" className="addMovieButton" onClick={() => this.setState({
-                                            showAddMovie: true, currentResult: result,
-                                        })}>Add Movie</Button>*/}
+                                        {
+                                        result.imdbId ?
+                                        movieids.includes(result.imdbId.replace('tt', '')) ? <Button className="addMovieButton" variant="info">Added</Button>
+                                        :
                                         <Button variant="success" className="addMovieButton" onClick={() => this.setState({
                                             showAddMovie: true, currentResult: result,
                                         })}>Add Movie</Button>
+                                        :
+                                         <Button variant="success" className="addMovieButton" onClick={() => this.setState({
+                                            showAddMovie: true, currentResult: result,
+                                        })}>Add Movie</Button> 
+                                        }
                                         
                                     </div>
                                     <div className="resultOverview">
@@ -202,7 +241,15 @@ class AddMovie extends React.Component{
                     </Modal.Header>
                     <Modal.Body bsPrefix="modalBody"> 
                     <span className="modalBodyText">This movie will be added to your on deck.</span><br></br>
-                    <span>Are you sure you want to add this movie?</span>
+                        <div className="addMovieText">
+                            <span >Would you like to download this movie?</span><br></br>
+                            <span>Please check if it is available on streaming services.</span>
+                        </div>
+                        <br></br>
+                        <Button variant='outline-primary' active={this.state.downloadChecked} className='deleteFilesButton' onClick={()=> this.setState({downloadChecked: !this.state.downloadChecked})}>
+                            Download
+                        </Button>
+                        <span className="addMovieText">Are you sure you want to add this movie?</span>
                     </Modal.Body>
                     <Modal.Footer bsPrefix="modalFooter">
                         <Button className="modalButton" variant="success" onClick={() => this.setState({filmLoading: true, backdrop:'static'},this.handleAddMovie)}>

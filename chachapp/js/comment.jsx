@@ -74,8 +74,8 @@ class Comment extends React.Component {
           : '' }      
         </div>
           <h5 className="commentText">{text}</h5>
-        <Modal centered contentClassName='deletedModal' show={showDeleted} animation={false} onHide={() => this.setState({deleteChecked: false, showDeleted: false})}>
-                  <div className="modal-content deletedModal">
+        <Modal centered contentClassName='deletedCommentModal' show={showDeleted} animation={false} onHide={() => this.setState({deleteChecked: false, showDeleted: false})}>
+                  <div className="modal-content deleteCommentModal">
                     <Modal.Header bsPrefix="modalHeader" closeButton>
                         <div className="modalHeaderLeft"></div>
                         <Modal.Title bsPrefix="modalTitle">Are You Sure?</Modal.Title>

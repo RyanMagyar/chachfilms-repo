@@ -149,7 +149,6 @@ class AddMovie extends React.Component{
 
     renderSearchResults = () => {
         const {results, movieids} = this.state;
-        console.log(movieids);
         if (Object.keys(results).length && results.length) {
             return (
                 <div className="results-container">
@@ -231,10 +230,10 @@ class AddMovie extends React.Component{
                 
                 </div>
 
-                <Modal backdrop={backdrop} centered contentClassName='watchedModal' show={showAddMovie} animation={false} onHide={() => this.setState({showAddMovie: false})}>
+                <Modal backdrop={backdrop} centered contentClassName='addedModal' show={showAddMovie} animation={false} onHide={() => this.setState({showAddMovie: false})}>
                     {filmLoading ?
                         <img  src={FilmLoader} className={`film-loading ${filmLoading ? 'show' : 'hide' }`}  alt="loader"/>
-                    :<div className="modal-content watchedModal">
+                    :<div className="modal-content addedModal">
                     <Modal.Header bsPrefix="modalHeader" closeButton>
                         <div className="modalHeaderLeft"></div>
                         <Modal.Title bsPrefix="modalTitle">Are You Sure?</Modal.Title>

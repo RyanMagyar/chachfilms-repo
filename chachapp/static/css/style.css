@@ -173,10 +173,17 @@ body {
     height: 100%;
 }
 .watchedModal {
+    width: 550px;
+    height: 200px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.addedModal {
     width:550px;
     height: 350px;
     margin-top: auto;
-    margin-bottom: auto;
+    margin-bottom: auto; 
 }
 
 .addMovieText{
@@ -1009,6 +1016,42 @@ html{
     margin-bottom: auto;
 }
 
+.statisticsWrapper{
+    width: 70%;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.statisticsTitle{
+    color: white;
+    font-size: 28pt;
+    text-align: center
+}
+
+.averagesGraphWrapper{
+    height: 20%;
+}
+
+.customToolTip{
+    background-color: #575957;
+}
+
+.customTTDiv{
+    padding: 10px 10px 10px 10px;
+
+}
+
+.ttLabel{
+    font-size: 12pt;
+}
+
+.averagesTitle{
+    color: white;
+    font-size: 24pt;
+    text-align: center;
+}
+
 @media (max-width: 1000px) {
 
     .moviePageDiv {
@@ -1019,8 +1062,13 @@ html{
         width: 90%;
     }
 
+    .statisticsWrapper{
+        width: 90%;
+    }
+
 
 }
+
 #instaHeader{
    font-family: 'Brush Script MT';
    margin-left: 30px;

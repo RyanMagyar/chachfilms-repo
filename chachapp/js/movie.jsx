@@ -215,7 +215,7 @@ class Movie extends React.Component {
                 <br></br>
                 <span className="movieInfo">Directed by: {director} ({year})</span><br></br>
                 <span className="movieInfo">IMDB Rating: {imdbrating}</span><br></br>
-                { average == -1 ?
+                { ratings.length == 0 ?
                     <div>
                         <span className="movieInfo">No Ratings Yet</span><br></br>
                     </div>
@@ -227,7 +227,7 @@ class Movie extends React.Component {
                             <span className="movieInfo">{rating.reviewer}: {rating.rating == -1 ? 'Null' : rating.rating}</span><br></br>
                         </div>);
                     })}
-                        <span className="movieInfo">Average: {average}</span><br></br>
+                        <span className="movieInfo">Average: {average == -1 ? "Null" : average}</span><br></br>
                     </div>
                  }
                 <div className="movieButtons">
@@ -325,7 +325,7 @@ class Movie extends React.Component {
                     <Modal.Body bsPrefix="modalBody"> 
                         <span className="modalBodyText">Are you sure you want to delete this movie?</span><br></br>
                         <span className="modalBodyTextWarning">This action cannot be undone.</span>
-                        <span>Would you like to delete files for this movie?</span><br></br>
+                        <span>Would you like to delete the files for this movie?</span><br></br>
                         <Button variant='outline-danger' active={this.state.deleteChecked} className='deleteFilesButton' onClick={()=> this.setState({deleteChecked: !this.state.deleteChecked})}>
                             Yes
                         </Button>

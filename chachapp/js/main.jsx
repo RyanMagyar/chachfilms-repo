@@ -8,6 +8,7 @@ import Downloads from './downloads';
 import Profile from './profile';
 import Reviewers from './reviewers';
 import MoviePage from './moviePage';
+import Statistics from './statistics';
 
 
 import { Route, Link, Redirect } from 'react-router-dom';
@@ -80,6 +81,7 @@ class Main extends React.Component{
                 <Route exact path="/watched/" render={(props) => (<Watched getNumInRotation={this.getNumInRotation}
                 numInRotation={this.state.numInRotation}/>)}/>
                 <Route exact path="/reviewers/" component={Reviewers}/>
+                <Route exact path="/statistics/" component={Statistics}/>
                 <Route exact path="/addmovie/" render={() => (
                     userToken ? (<AddMovie/>
                     ) :(

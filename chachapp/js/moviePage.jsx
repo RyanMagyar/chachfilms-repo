@@ -14,7 +14,6 @@ class MoviePage extends React.Component {
         const numInRotation = this.props.numInRotation;
         const tokenString = localStorage.getItem('token');
         const userToken = JSON.parse(tokenString);
-        console.log(this.props)
         const movieid = this.props.match.params.movieid;
 
         this.state = { movieid: movieid, currentState: '', showWatched: false, fade: false,
@@ -94,7 +93,6 @@ class MoviePage extends React.Component {
             return response.json();
         })
         .then((data) => {
-            console.log(data.comments)
             this.setState({
                             comments: data.comments
                           });
@@ -210,9 +208,7 @@ class MoviePage extends React.Component {
                                showInRotation: false,
                                showOnDeck: false,}, () => {
                                    if(currentState == 'inrotation') {
-                                       console.log(this.state.numInRotation);
                                        const newNumInRotation = this.state.numInRotation[this.state.suggestedby] - 1;
-                                       console.log(newNumInRotation);
                                        this.setState({numInRotation: newNumInRotation});
                                    }
                                });
@@ -298,7 +294,6 @@ class MoviePage extends React.Component {
         const { genres } = this.state; 
         const { comments} = this.state;
 
-
         if(this.state.deleteClicked) return(<Redirect to="/"/>);
 
         return(
@@ -324,7 +319,7 @@ class MoviePage extends React.Component {
                                     }</div>
                     <hr className="moviePageTitleHr"></hr>
                     <span className="movieImdbRating">IMDB Rating: {imdbrating}</span><br></br>
-                    { average == -1 ?
+                    { ratings.length == 0 ?
                         <div>
                             <span className="moviePageInfo">No Ratings Yet</span><br></br>
                         </div>
@@ -336,7 +331,7 @@ class MoviePage extends React.Component {
                                 <span className="moviePageInfo">{rating.reviewer}: {rating.rating == -1 ? 'Null' : rating.rating}</span><br></br>
                             </div>);
                         })}
-                            <span className="moviePageInfo">Average: {average}</span><br></br>
+                            <span className="moviePageInfo">Average: {average == -1 ? "Null" : average}</span><br></br>
                         </div>
                      }
                     <div className="moviePageButtons">
@@ -435,7 +430,7 @@ class MoviePage extends React.Component {
                     <Modal.Body bsPrefix="modalBody"> 
                         <span className="modalBodyText">Are you sure you want to delete this movie?</span><br></br>
                         <span className="modalBodyTextWarning">This action cannot be undone.</span>
-                        <span>Would you like to delete files for this movie?</span><br></br>
+                        <span>Would you like to delete the files for this movie?</span><br></br>
                         <Button variant='outline-danger' active={this.state.deleteChecked} className='deleteFilesButton' onClick={()=> this.setState({deleteChecked: !this.state.deleteChecked})}>
                             Yes
                         </Button>

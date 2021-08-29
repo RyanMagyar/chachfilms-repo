@@ -60,7 +60,6 @@ class Comment extends React.Component {
         )
     }
 
-    console.log(this.props.added);
 
     return (
       <div className="commentDiv">

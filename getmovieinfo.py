@@ -6,7 +6,7 @@ import chachapp
 import pathlib
 ia = IMDb()
 
-movies = ia.search_movie('The Devil\'s Advocate')
+movies = ia.search_movie('Glengarry Glen Ross')
 
 movie = movies[0]
 #print(movies)

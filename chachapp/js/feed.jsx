@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import Movie from './movie'
+import moment from 'moment';
 // This code is copyright 2012 by Gavin Kistner, !@phrogz.net
 // It is covered under the license viewable at http://phrogz.net/JS/_ReuseLicense.txt
 
@@ -56,14 +57,22 @@ class Feed extends React.Component {
             /* next line works with strings and numbers, 
              * and you may want to customize it to your needs
              */
-            var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+
+            if(property === "added"){
+                var dateA = new Date(a[property]);
+                var dateB = new Date(b[property]);
+                var result = (dateA < dateB) ? -1 : (dateA > dateB) ? 1 : 0;
+            } else {
+                var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+            }
+
             return result * sortOrder;
         }
     }
 
     sortMoviesBy() {
         const {movies} = this.state;
-        this.setState({movies: movies.sort(this.dynamicSort(this.props.sortBy))});
+        this.setState({movies: movies.sort(this.dynamicSort(this.props.sortBy))}, console.log(this.state.movies));
         this.filterMoviesBy();
     }
 

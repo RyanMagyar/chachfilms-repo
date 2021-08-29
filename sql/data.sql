@@ -61,6 +61,18 @@ VALUES ('0114746', '12 Monkeys', 1995, 'Terry Gilliam', '12Monkeys1995coverphoto
 INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
 VALUES ('0118971', 'The Devil''s Advocate', 1997, 'Taylor Hackford', 'TheDevil''sAdvocate1997coverphoto.jpg', ARRAY ['Drama', 'Mystery', 'Thriller'], 7.5, 'ondeck', 'Jon');
 
+INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
+VALUES ('0106977', 'The Fugitive', 1993, 'Andrew Davis', 'TheFugitive1993coverphoto.jpg', ARRAY ['Action', 'Crime', 'Drama', 'Mystery', 'Thriller'], 7.8, 'watched', 'Justin');
+
+INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
+VALUES ('0120586', 'American History X', 1998, 'Tony Kaye', 'AmericanHistoryX1998coverphoto.jpg', ARRAY ['Drama'], 8.5, 'watched', 'Marcus');
+
+INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
+VALUES ('1631867', 'Edge of Tomorrow', 2014, 'Doug Liman', 'EdgeofTomorrow2014coverphoto.jpg', ARRAY ['Action', 'Adventure', 'Sci-Fi'], 7.9, 'watched', 'Jon');
+
+INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
+VALUES ('0104348', 'Glengarry Glen Ross', 1992, 'James Foley', 'GlengarryGlenRoss1992coverphoto.jpg', ARRAY ['Crime', 'Drama', 'Mystery'], 7.7, 'watched', 'Ryan');
+
 INSERT INTO comments(owner, movieid, text)
 VALUES ('Ryan', '0114746', 'This movie sucks!');
 
@@ -74,8 +86,55 @@ INSERT INTO comments(owner, movieid, text)
 VALUES ('Marcus', '0114746', 'Jon you need to pick better movies.');
 
 INSERT INTO ratings(reviewer, movieid, rating)
-VALUES ('Ryan', '0078748', 8);
+VALUES ('Ryan', '0104348', 7.25);
 
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '0104348', 6.66);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Marcus', '0104348', 7);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Jon', '0104348', 7);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Ryan', '1631867', 8);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '1631867', NULL);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Marcus', '1631867', NULL);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Jon', '1631867', 9.27);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '0120586', 7);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Ryan', '0120586', 7.5);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Marcus', '0120586', 7);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Jon', '0120586', 6.5);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '0106977', 8.25);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Ryan', '0106977', 8.5);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Marcus', '0106977', 8.5);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '0106977', 9);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Ryan', '0078748', 8);
 
 INSERT INTO ratings(reviewer, movieid, rating)
 VALUES ('Justin', '0078748', 7);

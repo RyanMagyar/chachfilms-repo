@@ -241,9 +241,7 @@ class Statistics extends React.Component{
         const { averagesData, nullsData, genresData
                 , averagesdiffData, latestMoviesData
                 , highLowMovies } = this.state;
-
-        
-        
+ 
         return(
             <div className="statisticsWrapper">
                 <h1 className="statisticsTitle">Statistics</h1>

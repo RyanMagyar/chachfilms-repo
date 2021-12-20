@@ -241,6 +241,12 @@ class Statistics extends React.Component{
         const { averagesData, nullsData, genresData
                 , averagesdiffData, latestMoviesData
                 , highLowMovies } = this.state;
+        const userColors = {
+            0: "#c778ff",
+            1:"#ffb378",
+            2:"#78aaff",
+            3:"#29c443"
+        }
  
         return(
             <div className="statisticsWrapper">
@@ -319,10 +325,11 @@ class Statistics extends React.Component{
                         <YAxis yAxisId="left" orientation="left" allowDecimals={false} fontSize={12} stroke="#78acff" />
                         <Tooltip id="toolTip" wrapperStyle={{ fontSize: "12px", backgroundColor: "#ccc"}} />
                         <Legend wrapperStyle={{fontSize: "12px"}} />
-                        <Bar yAxisId="left" dataKey="Ryan" label={this.renderCustomLabelText} fill="#c778ff" />
-                        <Bar yAxisId="left" dataKey="Justin" label={this.renderCustomLabelText} fill="#ffb378" />
-                        <Bar yAxisId="left" dataKey="Marcus" label={this.renderCustomLabelText} fill="#78aaff" />
-                        <Bar yAxisId="left" dataKey="Jon" label={this.renderCustomLabelText} fill="#29c443" />
+                        {Object.keys(this.props.numInRotation).map((user, index) => {
+                            return(
+                                <Bar key={user} yAxisId="left" dataKey={user} label={this.renderCustomLabelText} fill={userColors[index]} />
+                            );
+                        })}
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
@@ -381,14 +388,12 @@ class Statistics extends React.Component{
                         <YAxis yAxisId="left" orientation="left" fontSize={12} ticks={[0,1,2,3,4,5,6,7,8,9,10]} domain={[0, 10]}  stroke="#54d686" />
                         <Tooltip id="toolTip" content={this.renderCustomToolTip} wrapperStyle={{ fontSize: "12px", backgroundColor: "#ccc"}} />
                         <Legend wrapperStyle={{fontSize: "14px"}} />
-                        <Line yAxisId="left" type="monotone" dataKey="Ryan" stroke="#4f92ff"> 
-                        </Line>
-                        <Line yAxisId="left" type="monotone" dataKey="Marcus"stroke="#ffb94f">
-                        </Line>
-                        <Line yAxisId="left" type="monotone" dataKey="Justin" stroke="#c233f2">
-                        </Line>
-                        <Line yAxisId="left" type="monotone" dataKey="Jon" stroke="#4fff52">
-                        </Line>
+                        {Object.keys(this.props.numInRotation).map((user, index) => {
+                            return(
+                                <Line key={user} yAxisId="left" type="monotone" dataKey={user} stroke={userColors[index]}> 
+                                </Line>
+                            );
+                        })}
                         </LineChart>
                     </ResponsiveContainer>
                 </div>

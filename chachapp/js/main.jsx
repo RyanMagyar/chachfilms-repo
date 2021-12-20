@@ -22,10 +22,9 @@ class Main extends React.Component{
         super(props);
         this.state = {
             toggleHeaderRerender: false, toggleHomeRerender: false,
-            numInRotation: {'Ryan': -1,
-            'Justin': -1, 'Marcus': -1, 'Jon': -1}
+            numInRotation: {}
         };
-        
+        this.getUsers();
         this.rerenderHeader = this.rerenderHeader.bind(this);
         this.rerenderHome = this.rerenderHome.bind(this);
         this.getNumInRotation = this.getNumInRotation.bind(this);
@@ -38,6 +37,23 @@ class Main extends React.Component{
 
     rerenderHome() {
         this.setState({toggleHomeRerender: !this.state.toggleHomeRerender});
+    }
+
+    getUsers(){
+
+        var numInRotation = {};
+        fetch("/api/v1/accounts/users/")
+        .then((response) => {
+            if (!response.ok) throw Error(response.statusText);
+            
+            return response.json();
+        })
+        .then((data) => {
+            var users = data.users;
+            users.forEach(user => numInRotation[user.username] = -1);
+            this.setState({numInRotation: numInRotation});
+        })
+        .catch((error) => console.log(error));
     }
 
     getNumInRotation(movies, url) {
@@ -81,7 +97,7 @@ class Main extends React.Component{
                 <Route exact path="/watched/" render={(props) => (<Watched getNumInRotation={this.getNumInRotation}
                 numInRotation={this.state.numInRotation}/>)}/>
                 <Route exact path="/reviewers/" component={Reviewers}/>
-                <Route exact path="/statistics/" component={Statistics}/>
+                <Route exact path="/statistics/" render={(props) => (<Statistics numInRotation={this.state.numInRotation}/>)}/>
                 <Route exact path="/addmovie/" render={() => (
                     userToken ? (<AddMovie/>
                     ) :(

@@ -24,8 +24,7 @@ def login():
     if username == '' or password == '':
         response = {'message': 'Username or password cannot be blank.', 
                     'status_code': 400}
-        return response, 400
-    
+        return response, 400 
     cur.execute(
         '''SELECT username, password 
         FROM reviewers WHERE username = %s
@@ -45,6 +44,18 @@ def login():
                 'access_token': access_token,
                 'status_code': 200}
 
+    return flask.jsonify(**context)
+
+@chachapp.app.route('/api/v1/accounts/users/', methods=['GET'])
+def get_users():
+    """Get names of all users"""
+    cur = chachapp.model.get_db()
+
+    cur.execute("""SELECT username FROM reviewers""")
+    users = cur.fetchall()
+    
+    context = {'users': users,
+               'status_code': 200}
     return flask.jsonify(**context)
 
 @chachapp.app.route('/api/v1/accounts/picture/', methods=['POST'])
@@ -156,6 +167,10 @@ def update_password():
         response = {'message': 'Old Password must not be blank.', 
                 'status_code': 400}
         return response, 400
+    elif new_password1 != new_password2:
+        response = {'message': 'New passwords do not match', 
+                'status_code': 400}
+        return response, 400
 
     cur.execute(
         'SELECT * FROM reviewers WHERE username = %s', (username,)
@@ -168,10 +183,6 @@ def update_password():
                 'status_code': 400}
         return response, 400
 
-    if new_password1 != new_password2:
-        response = {'message': 'New passwords do not match', 
-                'status_code': 400}
-        return response, 400
 
     algorithm = 'sha512'
     salt = uuid.uuid4().hex

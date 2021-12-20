@@ -14,7 +14,7 @@ class Home extends React.Component {
         const userToken = JSON.parse(tokenString);
         this.state = {
             lastWatched: 'Picked Last', rolledMovie: 'Please select last person to pick!', isLoggedIn: userToken,
-            toggleRerender: false,  toggleHomeRerender: this.props.toggleHomeRerender,
+            toggleRerender: false,  toggleHomeRerender: this.props.toggleHomeRerender, numInRotation: this.props.numInRotation,
         };
         this.handleClick = this.handleClick.bind(this);
         this.rerenderParent = this.rerenderParent.bind(this);
@@ -75,6 +75,22 @@ class Home extends React.Component {
             .catch((error) => console.log(error));
     }
 
+    renderRollMenu(){
+        const numInRotation = this.props.numInRotation;
+        const { lastWatched } = this.state;
+        return (
+
+            <DropdownButton bsPrefix="lastSelectedButton" id="dropdown-basic-button" title={lastWatched}>
+                {Object.keys(numInRotation).map((username) => {
+                    return(
+                        <Dropdown.Item key={username} className="dropdownItem" onClick={() => this.setState({ lastWatched: username})}>{`${username}`}</Dropdown.Item>
+                        
+                    );
+                })}
+            </DropdownButton>
+        );
+    }
+
     render(){
 
         const { lastWatched } = this.state;
@@ -84,13 +100,7 @@ class Home extends React.Component {
             <div>
                 <div className="rollDiv">
                     {toggleRerender && <h1 className="rollHeading">Roll for Movie</h1>}
-                    
-                    <DropdownButton bsPrefix="lastSelectedButton" id="dropdown-basic-button" title={lastWatched}>
-                        <Dropdown.Item className="dropdownItem" onClick={() => this.setState({ lastWatched: "Ryan"})}>Ryan</Dropdown.Item>
-                        <Dropdown.Item className="dropdownItem" onClick={() => this.setState({ lastWatched: "Jon"})}>Jon</Dropdown.Item>
-                        <Dropdown.Item className="dropdownItem" onClick={() => this.setState({ lastWatched: "Justin"})}>Justin</Dropdown.Item>
-                        <Dropdown.Item className="dropdownItem" onClick={() => this.setState({ lastWatched: "Marcus"})}>Marcus</Dropdown.Item>
-                    </DropdownButton>
+                    {this.renderRollMenu()}
 
                     <h1 className="rolledMovie">{rolledMovie}</h1>
 

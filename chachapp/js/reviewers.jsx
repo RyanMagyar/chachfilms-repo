@@ -28,7 +28,6 @@ class Reviewers extends React.Component{
             return response.json();
         })
         .then((data) => {
-            console.log(data);
             this.setState({
                 reviewers: data.reviewers,
             });

@@ -72,7 +72,7 @@ class Feed extends React.Component {
 
     sortMoviesBy() {
         const {movies} = this.state;
-        this.setState({movies: movies.sort(this.dynamicSort(this.props.sortBy))}, console.log(this.state.movies));
+        this.setState({movies: movies.sort(this.dynamicSort(this.props.sortBy))});
         this.filterMoviesBy();
     }
 

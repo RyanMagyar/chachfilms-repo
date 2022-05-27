@@ -1,0 +1,21 @@
+#!/bin/bash
+set -x
+set -v
+# run the chachfilms website
+# Stop on errors
+# See https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
+set -Eeuo pipefail
+
+# if ! psql -lqt | grep -q chachfilms; then
+#  ./bin/webdb create
+# fi
+
+
+export FLASK_ENV=production
+export FLASK_APP=chachapp
+export JWT_SECRET_KEY=FIXME
+export POSTGRESQL_DATABASE_PASSWORD=nintendo11
+
+npx webpack --config webpack.prod.js --watch &
+
+flask run --port 8000

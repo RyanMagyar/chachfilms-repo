@@ -14,7 +14,14 @@
     <div id="reactEntry">
     	Loading ...
     </div>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/bundle.js') }}"></script>
+    <script 
+        type="text/javascript"
+        {% if config['ENV'] == 'production' %}
+        src="{{ url_for('static', filename='js/bundle.min.js') }}"
+        {% else %}
+        src="{{ url_for('static', filename='js/bundle.dev.js') }}"
+        {% endif %}
+    ></script>
     
 </body>
 </html>

@@ -6,11 +6,28 @@ set -v
 # See https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
 set -Eeuo pipefail
 
-if ! psql -lqt | grep -q chachfilms; then
-  ./bin/webdb create
+if [ $# -ne 1 ]; then
+    if ! psql -lqt | grep -q chachfilms; then
+      ./bin/webdb create
+    fi
+
+    export FLASK_ENV=development
+    export FLASK_APP=chachapp
+    export DB_HOST=localhost
+
+    npx webpack --config webpack.dev.js --watch &
+
+    flask run --host 0.0.0.0 --port 8000
+    exit 0
 fi
 
+case $1 in
 
-export FLASK_ENV=development
-export FLASK_APP=chachapp
-flask run --host 0.0.0.0 --port 8000
+    "docker")
+        python3 setup.py sdist 
+        docker-compose -f docker-compose.yml up --build
+        ;;
+    *)
+        exit 1
+        ;;
+esac

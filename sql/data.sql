@@ -77,13 +77,13 @@ INSERT INTO comments(owner, movieid, text)
 VALUES ('Ryan', '0114746', 'This movie sucks!');
 
 INSERT INTO comments(owner, movieid, text)
-VALUES ('jon', '0114746', 'I love this movie.');
+VALUES ('Jon', '0114746', 'I love this movie.');
 
 INSERT INTO comments(owner, movieid, text)
-VALUES ('justin', '0114746', 'This movie was fantastic. I really liked Keanu Reeves, but Al Pacino was a bit of a bore. Overall it was good.');
+VALUES ('Justin', '0114746', 'This movie was fantastic. I really liked Keanu Reeves, but Al Pacino was a bit of a bore. Overall it was good.');
 
 INSERT INTO comments(owner, movieid, text)
-VALUES ('marcus', '0114746', 'Jon you need to pick better movies.');
+VALUES ('Marcus', '0114746', 'Jon you need to pick better movies.');
 
 INSERT INTO ratings(reviewer, movieid, rating)
 VALUES ('Ryan', '0104348', 7.25);
@@ -131,7 +131,7 @@ INSERT INTO ratings(reviewer, movieid, rating)
 VALUES ('Marcus', '0106977', 8.5);
 
 INSERT INTO ratings(reviewer, movieid, rating)
-VALUES ('Justin', '0106977', 9);
+VALUES ('Jon', '0106977', 9);
 
 INSERT INTO ratings(reviewer, movieid, rating)
 VALUES ('Ryan', '0078748', 8);

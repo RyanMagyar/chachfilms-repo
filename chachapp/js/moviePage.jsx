@@ -103,7 +103,7 @@ class MoviePage extends React.Component {
     }
     getMovieInfo(){
         const movieid = this.props.match.params.movieid;
-        const url = `/api/v1/m/${movieid}/info`
+        const url = `/api/v1/m/${movieid}/info/`
 
         fetch(url, {
             credentials: 'same-origin',

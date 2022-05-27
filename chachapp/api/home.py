@@ -15,6 +15,7 @@ import chachapp
 
 jwt = JWTManager(chachapp.app)
 
+
 @chachapp.app.route('/api/v1/', methods=["GET"])
 def get_v1():
     """Return a list of available resources."""
@@ -25,12 +26,13 @@ def get_v1():
     user = get_jwt_identity()
     return flask.jsonify(**context)
 
+
 @chachapp.app.route('/api/v1/<string:state>/', methods=["GET"])
 def get_movies_in_state(state):
     """Return movies inrotation."""
     cur = chachapp.model.get_db()
     cur.execute("""SELECT * FROM movies m
-                WHERE m.state=%s 
+                WHERE m.state=%s
                 ORDER BY m.suggestedby""", (state,))
     movies = cur.fetchall()
     for movie in movies:
@@ -60,14 +62,14 @@ def get_movie_info(movieid):
     movie['ratings'] = ratings_returned['ratings']
     movie['average'] = ratings_returned['avg']
     movie['genres'] = movie['genres']
-    
+
     context = {
         "movie" : movie,
     }
-    
+
     return flask.jsonify(**context)
-     
-    
+
+
 @chachapp.app.route('/api/v1/m/<string:movieid>/comments/', methods=['POST'])
 @jwt_required()
 def post_movie_comment(movieid):
@@ -78,80 +80,80 @@ def post_movie_comment(movieid):
     username = user['username']
     request_data = request.get_json()
     text = request_data['commentText']
-    
+
     cur.execute(""" INSERT INTO comments (owner, movieid, text)
                     VALUES (%s, %s, %s)
                 """, (username, movieid, text))
-     
+
     context = {'message': 'Comment posted successful',
                'status_code': 200}
 
-    return flask.jsonify(**context) 
-    
+    return flask.jsonify(**context)
+
 
 @chachapp.app.route('/api/v1/m/<string:movieid>/comments/', methods=['GET'])
 def get_movie_comments(movieid):
     """Return comments for movieid."""
     cur = chachapp.model.get_db()
- 
+
     cur.execute(""" SELECT c.commentid, c.owner, c.text, r.filename, c.added
                     FROM comments c
                     JOIN reviewers r ON r.username = c.owner
                     WHERE movieid = %s
                     ORDER BY added ASC
                 """, (movieid,))
-     
+
     comments = cur.fetchall()
 
-    for comment in comments:    
+    for comment in comments:
         comment['filename'] = "/uploads/{}".format(comment['filename'])
         comment['added'] = "{}".format(comment['added'])
-    
-    
+
+
     context = {'comments': comments,
                'status_code': 200}
 
-    return flask.jsonify(**context) 
+    return flask.jsonify(**context)
 
 @chachapp.app.route('/api/v1/m/<string:movieid>/comments/<string:commentid>/', methods=["DELETE"])
 @jwt_required()
 def delete_movie_comment(movieid, commentid):
     """Delete comment with commentid."""
-    cur = chachapp.model.get_db() 
-    
-    
+    cur = chachapp.model.get_db()
+
+
     user = get_jwt_identity()
     username = user['username']
     cur.execute(""" SELECT FROM comments
                     WHERE commentid = %s AND owner = %s AND movieid = %s
                 """, (commentid, username, movieid))
-    
+
     comments = cur.fetchall()
-    
+
     if len(comments) != 1:
         response = {'movieid': movieid,
                     'commentid': commentid,
                     'user': username,
-                    'message': 'Forbidden', 
+                    'message': 'Forbidden',
                     'status_code': 403}
         return response, 403
-        
-    
+
+
     cur.execute(""" DELETE FROM comments
                     WHERE commentid = %s
                 """, (commentid,))
     count = cur.rowcount
-    
+
     if count != 1:
         response = {'movieid': movieid,
-                    'message': 'Invalid commentid', 
+                    'message': 'Invalid commentid',
                     'status_code': 400}
         return response, 400
-    
+
     response = {'message': 'comment deleted succesfully',
                 'status_code': 204}
 
-    return response, 204 
+    return response, 204
 
 
 @chachapp.app.route('/api/v1/m/<string:movieid>/ratings/', methods=["GET"])
@@ -169,10 +171,10 @@ def get_ratings_helper(movieid):
     """Helper function for getting ratings"""
     cur = chachapp.model.get_db()
     cur.execute("""SELECT reviewer, rating FROM ratings r
-                WHERE r.movieid=%s 
+                WHERE r.movieid=%s
                 """, (movieid,))
     ratings_returned = cur.fetchall()
-    
+
     ratings = []
     for row in ratings_returned:
         ratings.append(dict(row))
@@ -181,19 +183,19 @@ def get_ratings_helper(movieid):
         if rating['rating'] is None:
             rating['rating'] = -1
         rating['rating'] = float(rating['rating'])
-    
+
     cur.execute("""SELECT AVG(rating) FROM ratings r
-                WHERE r.movieid=%s 
+                WHERE r.movieid=%s
                 """, (movieid,))
-    
+
     rating_avg = cur.fetchone()
-    
+
     if rating_avg['avg'] is None:
         rating_avg['avg'] = -1
     else:
         rating_avg['avg'] = round(float(rating_avg['avg']), 2)
     ratings_dict = {"avg": rating_avg["avg"], "ratings": ratings}
-    
+
     return ratings_dict
 
 @chachapp.app.route('/api/v1/roll/<string:picked_last>/', methods=["GET"])
@@ -211,26 +213,26 @@ def get_roll(picked_last):
 
 @chachapp.app.route('/api/v1/m/<string:movieid>/rate/', methods=["POST"])
 def post_rating(movieid):
-    """Rate movieid with given rating.""" 
+    """Rate movieid with given rating."""
     cur = chachapp.model.get_db()
     user = request.args.get('user')
     rating = request.args.get('rating')
-    
+
     if rating.lower() == 'slept':
         rating = None
     cur.execute("""INSERT INTO ratings (movieid, reviewer, rating)
                 VALUES (%s, %s, %s)
-                ON CONFLICT(movieid,reviewer) DO UPDATE 
+                ON CONFLICT(movieid,reviewer) DO UPDATE
                 SET rating = EXCLUDED.rating""", (movieid, user, rating))
-    
+
     count = cur.rowcount
-    
+
     if count != 1:
         response = {'movieid': movieid,
-                    'message': 'Invalid movieid', 
+                    'message': 'Invalid movieid',
                     'status_code': 400}
         return response, 400
-    
+
     response = {'message': 'Rating submitted succesfully', 'status_code': 201}
     return response, 201
 
@@ -241,27 +243,27 @@ def set_movie_state(movieid):
     validStates = ['watched', 'inrotation', 'ondeck']
     newState = request.args.get('state')
     user = get_jwt_identity()
-    
+
     if newState not in validStates:
         response = {'state': newState,
-                    'message': 'State is not a valid state', 
+                    'message': 'State is not a valid state',
                     'status_code': 400}
         return response, 400
-    
+
     cur = chachapp.model.get_db()
     cur.execute(''' UPDATE movies
                 SET state = %s, added = CURRENT_TIMESTAMP
                 WHERE movieid = %s
                 ''', (newState, movieid))
-    
+
     count = cur.rowcount
-    
+
     if count != 1:
         response = {'movieid': movieid,
-                    'message': 'Invalid movieid', 
+                    'message': 'Invalid movieid',
                     'status_code': 400}
         return response, 400
-    
+
     response = {'message': 'OK', 'status_code': 200}
     return response, 200
 
@@ -270,29 +272,29 @@ def set_movie_state(movieid):
 def delete_movie(movieid):
     """Delete movie with movieid."""
     delete_checked = request.args.get('deleteChecked')
-    
+
     radarr_reponse = 200
     if delete_checked == 'true':
         radarr_reponse = deleteFromRadarr(movieid, delete_checked)
-    
+
     if radarr_reponse > 299:
         response = {'movieid': movieid,
-                    'message': 'Radarr Error', 
+                    'message': 'Radarr Error',
                     'status_code': 400}
         return response, 400
-    
+
     cur = chachapp.model.get_db()
     cur.execute('''DELETE FROM movies
                 WHERE movieid = %s
                 ''',(movieid,))
     count = cur.rowcount
-    
+
     if count != 1:
         response = {'movieid': movieid,
-                    'message': 'Invalid movieid', 
+                    'message': 'Invalid movieid',
                     'status_code': 400}
         return response, 400
-    
+
     response = {'message': 'resource deleted succesfully',
                 'status_code': 204}
     return response, 204
@@ -309,16 +311,16 @@ def add_movie(user):
     print(download_checked)
     if download_checked == 'true':
         radarr_reponse = addToRadarr(new_movie)
-    
+
         if radarr_reponse > 299:
             response = {'movie': new_movie['title'],
-                        'message': 'Radarr could not be reached', 
+                        'message': 'Radarr could not be reached',
                         'status_code': radarr_reponse}
             return response, radarr_reponse
-    
+
     ia = IMDb()
     movie = ia.get_movie(new_movie['imdbId'].replace('tt',''))
-    
+
     url = movie['full-size cover url']
     filename = movie['title'].replace(' ', '') + str(movie['year']) + 'coverphoto.jpg'
     response = requests.get(url, stream=True)
@@ -327,20 +329,20 @@ def add_movie(user):
     if response.status_code == 200:
         with open (path, 'wb') as out_file:
             shutil.copyfileobj(response.raw, out_file)
-    
+
     cur.execute('''INSERT INTO movies
-                (movieid, title, year, director, filename, 
-                genres, imdbrating, state, suggestedby) 
+                (movieid, title, year, director, filename,
+                genres, imdbrating, state, suggestedby)
                 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 ''',(movie['imdbID'], movie['title'], movie['year'],
-                     movie['directors'][0]['name'], filename, movie['genres'], 
+                     movie['directors'][0]['name'], filename, movie['genres'],
                      movie['rating'], "ondeck", user))
-    
-    
-    
+
+
+
     response = {'message': 'movie added succesfully',
                 'status_code': 201}
-    
+
     return response, 201
 
 @chachapp.app.route('/api/v1/search/', methods=["GET"])
@@ -351,38 +353,37 @@ def search_movie():
     url = 'https://radarr.chachfilms.com/api/v3/movie/lookup?term=' \
     + query + '&apikey=7f5a36fb199f46e68eca4f0d476638ad'
     r = requests.get(url)
-    
+
     if r.status_code > 299:
         response = {
-                    'message': 'Radarr could not be reached', 
+                    'message': 'Radarr could not be reached',
                     'status_code': r.status_code}
         return response, r.status_code
-    
+
     context = {
         "data": r.json(),
     }
     return flask.jsonify(**context)
 
-    
+
 @chachapp.app.route('/api/v1/getMovieIds/', methods=["GET"])
-#@jwt_required()
+@jwt_required()
 def get_movieIds():
     """Get all movieIds."""
-    
+
     cur = chachapp.model.get_db()
-    print('movieids')
     cur.execute("""
                 SELECT movieid FROM movies""")
-    
+
     movieids = cur.fetchall()
-    
+
     context = {
         "movieids": movieids,
     }
     return flask.jsonify(**context)
-    
-    
-    
+
+
+
 @chachapp.app.route('/api/v1/downloads/', methods=["GET"])
 @jwt_required()
 def get_downloads():
@@ -390,10 +391,10 @@ def get_downloads():
     url = 'https://radarr.chachfilms.com/api/v3/queue/' \
     + '?apikey=7f5a36fb199f46e68eca4f0d476638ad'
     r = requests.get(url)
-    
+
     if r.status_code > 299:
         response = {
-                    'message': 'Radarr could not be reached', 
+                    'message': 'Radarr could not be reached',
                     'status_code': r.status_code}
         return response, r.status_code
     records = r.json()['records']
@@ -402,7 +403,7 @@ def get_downloads():
                     + str(record['movieId']) + '?apikey=7f5a36fb199f46e68eca4f0d476638ad'
         movieRequest = requests.get(movieURL)
         record['title'] = movieRequest.json()['title']
-        
+
 
     context = {
         "data": records,
@@ -425,24 +426,24 @@ def deleteFromRadarr(movieid, delete_checked):
     """Delete movie object from Radarr."""
     r = requests.get('https://radarr.chachfilms.com/api/v3/movie?apikey=7f5a36fb199f46e68eca4f0d476638ad')
     imdb_id = 'tt' + movieid
-    
+
     movie_to_delete = None
     for movie_object in r.json():
         if movie_object['imdbId'] == imdb_id:
             movie_to_delete = movie_object
     if(movie_to_delete is not None):
-        r = requests.delete(url='https://radarr.chachfilms.com/api/v3/movie/' + 
+        r = requests.delete(url='https://radarr.chachfilms.com/api/v3/movie/' +
                         str(movie_to_delete['id']) + '?deleteFiles=' + delete_checked
                         + '&' + 'apikey=7f5a36fb199f46e68eca4f0d476638ad')
-    
+
     return r.status_code
-    
-    
-    
 
-    
 
-@chachapp.app.errorhandler(404)   
-def not_found(e):   
+
+
+
+
+@chachapp.app.errorhandler(404)
+def not_found(e):
   return flask.render_template("index.html")
 

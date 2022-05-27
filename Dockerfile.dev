@@ -1,0 +1,47 @@
+# Build React static files
+FROM node:16-alpine as build-step
+WORKDIR /app
+ENV PATH /app/node_modules/.bin:$PATH
+ENV FLASK_ENV="development" FLASK_APP="chachapp"  
+
+COPY package.json package-lock.json ./
+COPY ./chachapp/js/ ./chachapp/js/
+COPY webpack.common.js webpack.dev.js ./
+
+COPY ./chachapp/static/ ./chachapp/static/
+
+RUN npm ci .
+RUN npx webpack --config webpack.dev.js
+
+# Build API with static files
+FROM python:3.9.1-slim-buster
+WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV FLASK_ENV="development" FLASK_APP="chachapp" APP_FOLDER="/app"
+
+# Copy list of production requirements into Docker container
+COPY requirements.txt ./
+
+# Install Python package requirements
+RUN pip install -r ./requirements.txt
+
+# Copy application into image
+COPY dist/chachapp-0.1.0.tar.gz ./
+
+RUN tar -xf chachapp-0.1.0.tar.gz
+RUN mv ./chachapp-0.1.0/chachapp ./chachapp
+
+# Copy bundle.js 
+COPY --from=build-step /app/chachapp/static/js/bundle.dev.js ./chachapp/static/js/bundle.dev.js
+
+# Copy Uploads
+COPY ./var/uploads/ ./var/uploads/ 
+
+
+# Run the web server in the container
+CMD flask run --host 0.0.0.0 --port 8000
+# CMD gunicorn \
+#  --workers 4 \
+#  --bind 0.0.0.0:8000 \
+#  chachapp:app

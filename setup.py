@@ -6,7 +6,6 @@ setup(
     packages=['chachapp'],
     include_package_data=True,
     install_requires=[
-	'Flask-S3==0.3.3',
         'arrow',
         'bs4',
         'Flask',
@@ -17,7 +16,7 @@ setup(
         'pytest',
         'requests',
         'imdbpy',
-        'psycopg2'
+        'psycopg2-binary'
     ],
     python_requires='>=3.6',
 )

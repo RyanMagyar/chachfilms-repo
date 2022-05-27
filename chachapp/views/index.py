@@ -10,6 +10,7 @@ from flask import (
     redirect, session, url_for, send_from_directory, abort, jsonify
 )
 import chachapp
+import sys
 
 @chachapp.app.route('/')
 def show_index():
@@ -18,7 +19,7 @@ def show_index():
     movies = cur.fetchall()
     for movie in movies:
         movie['imdbrating'] =  str(movie['imdbrating'])
-    
+
     # Add database info to context
     context = {"movies": movies}
     return flask.render_template("index.html", **context)
@@ -29,7 +30,7 @@ def show_image(file):
 
     path = chachapp.app.config["UPLOAD_FOLDER"]/file
     if not path.is_file():
-        abort(404)
+        abort(410)
 
     return send_from_directory(chachapp.app.config['UPLOAD_FOLDER'],
                                file, as_attachment=True)

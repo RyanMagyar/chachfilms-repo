@@ -21,24 +21,24 @@ fi
 case $1 in
 
 "empty")
-    if psql -lqt | grep chachfilms; then
+    if psql -U $POSTGRES_USER -lqt | grep chachfilms; then
     echo "Error: database already exists"
     exit 1
     fi
-    createdb --echo chachfilms
-    psql --echo-errors -d chachfilms -f sql/schema.sql
+    createdb -U $POSTGRES_USER --echo chachfilms
+    psql -U $POSTGRES_USER --echo-errors -d chachfilms -f sql/schema.sql
     mkdir -p ${UPLOAD_FOLDER}
     ;;
 
   "create")
     $0 empty
-    psql --echo-errors -d chachfilms -f sql/data.sql
+    psql -U $POSTGRES_USER --echo-errors -d chachfilms -f sql/data.sql
     cp sql/uploads/* ${UPLOAD_FOLDER}/
     ;;
 
 
   "destroy")
-    dropdb --echo chachfilms
+    dropdb -U $POSTGRES_USER --echo chachfilms
     rm -rf ${UPLOAD_FOLDER}
     ;;
 
@@ -48,9 +48,9 @@ case $1 in
     ;;
 
   "dump")
-    TABLES=`psql -d chachfilms -c '\x' -c '\dt' | grep Name | awk '{print $3}'`
+    TABLES=`psql -U $POSTGRES_USER -d chachfilms -c '\x' -c '\dt' | grep Name | awk '{print $3}'`
     for TABLE in ${TABLES}; do
-    psql -d chachfilms -c "\x" -c "SELECT * FROM ${TABLE}"
+    psql -U $POSTGRES_USER -d chachfilms -c "\x" -c "SELECT * FROM ${TABLE}"
     echo
     done
     ;;

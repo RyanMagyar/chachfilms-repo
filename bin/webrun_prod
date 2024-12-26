@@ -13,6 +13,7 @@ set -Eeuo pipefail
 
 export FLASK_ENV=production
 export FLASK_APP=chachapp
+export DB_HOST=localhost 
 export JWT_SECRET_KEY=FIXME
 export POSTGRESQL_DATABASE_PASSWORD=nintendo11
 

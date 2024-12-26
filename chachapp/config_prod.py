@@ -15,7 +15,7 @@ if not POSTGRESQL_DATABASE_PASSWORD:
 
 # Production Database Config
 # Database
-POSTGRESQL_DATABASE_HOST = "postgresql://ryanmagyar:nintendo11@db:5432/chachfilms"
+POSTGRESQL_DATABASE_HOST = os.environ.get("DB_HOST")
 POSTGRESQL_DATABASE_PORT = 5432
 POSTGRESQL_DATABASE_USER = "ryanmagyar"  # OS or WSL username
 POSTGRESQL_DATABASE_PASSWORD = "nintendo11"

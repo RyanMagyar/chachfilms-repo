@@ -8,7 +8,7 @@ JWT_SECRET_KEY = (
     b'\n\x9dvyk\x90\x11Z/\xba#\xce~mG,\x1d-\x97\xe3Q\x01\xc4\x1f'
 )
 
-JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=1)
+JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=60)
 
 # Database
 POSTGRESQL_DATABASE_HOST = os.getenv("DB_HOST")

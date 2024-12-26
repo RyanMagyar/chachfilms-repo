@@ -4,6 +4,7 @@ services:
   web:
     image: chachap-dev:latest
     build: 
+      context: .
       dockerfile: Dockerfile.dev
     container_name: "chachapp-dev"
     ports:
@@ -11,7 +12,7 @@ services:
     env_file:
       - ./.env.dev
     depends_on:
-      - db
+      - postgres
   postgres:
     image: postgres:13-alpine
     container_name: "chach-db"

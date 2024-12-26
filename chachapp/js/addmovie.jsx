@@ -88,7 +88,7 @@ class AddMovie extends React.Component {
                     credentials: 'same-origin',
                     method: 'GET',
                     headers: {
-                        "authorization": `Bearer ${isLoggedIn}`,
+                        "Authorization": `Bearer ${isLoggedIn}`,
                         'Content-Type': 'application/json'
                     }
                 })

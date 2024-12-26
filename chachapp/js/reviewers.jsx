@@ -2,9 +2,9 @@
 import React from 'react';
 
 
-class Reviewers extends React.Component{
+class Reviewers extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             reviewers: [],
@@ -12,34 +12,35 @@ class Reviewers extends React.Component{
         this.getReviewers = this.getReviewers.bind(this);
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.getReviewers();
     }
 
-    getReviewers(){
+    getReviewers() {
 
-        fetch('/api/v1/reviewers/', 
-        { credentials: 'same-origin',
-            method: 'GET',
-          })
-        .then((response) => {
-            if (!response.ok) throw Error(response.statusText);
+        fetch('/api/v1/reviewers/',
+            {
+                credentials: 'same-origin',
+                method: 'GET',
+            })
+            .then((response) => {
+                if (!response.ok) throw Error(response.statusText);
 
-            return response.json();
-        })
-        .then((data) => {
-            this.setState({
-                reviewers: data.reviewers,
-            });
-        })
-        .catch((error) => console.log(error)); 
+                return response.json();
+            })
+            .then((data) => {
+                this.setState({
+                    reviewers: data.reviewers,
+                });
+            })
+            .catch((error) => console.log(error));
     }
 
 
-    render(){
+    render() {
         const { reviewers } = this.state;
 
-        return(
+        return (
             <div className="reviewersWrapper">
                 <h1 className="reviewersHeading">Meet the Reviewers</h1>
                 {reviewers.map((reviewer) => (

@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 ReactDOM.render(
 
     <BrowserRouter>
-        <Main/>
+        <Main />
     </BrowserRouter>,
     document.getElementById('reactEntry'),
 );

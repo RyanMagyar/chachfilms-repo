@@ -73,17 +73,59 @@ VALUES ('1631867', 'Edge of Tomorrow', 2014, 'Doug Liman', 'EdgeofTomorrow2014co
 INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
 VALUES ('0104348', 'Glengarry Glen Ross', 1992, 'James Foley', 'GlengarryGlenRoss1992coverphoto.jpg', ARRAY ['Crime', 'Drama', 'Mystery'], 7.7, 'watched', 'Ryan');
 
-INSERT INTO comments(owner, movieid, text)
-VALUES ('Ryan', '0114746', 'This movie sucks!');
+INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
+VALUES ('1800241', 'American Hustle', 2013, 'David O. Russell', 'AmericanHustle2013coverphoto.jpg', ARRAY ['Crime', 'Drama'], 7.2, 'watched', 'Justin');
+
+INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
+VALUES ('1234548', 'The Men Who Stare at Goats', 2009, 'Grant Heslov', 'TheMenWhoStareatGoats2009coverphoto.jpg', ARRAY ['Comedy', 'War'], 6.2, 'watched', 'Justin');
+
+INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
+VALUES ('2316411', 'Enemy', 2013, 'Denis Villeneuve', 'Enemy2013coverphoto.jpg', ARRAY ['Drama', 'Mystery', 'Thriller'], 6.9, 'watched', 'Justin');
+
+INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
+VALUES ('5109784', 'Mother!', 2017, 'Darren Aronofsky', 'Mother!2017coverphoto.jpg', ARRAY ['Drama', 'Horror', 'Mystery'], 6.6, 'watched', 'Jon');
+
+INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
+VALUES ('0368008', 'The Manchurian Candidate', 2004, 'Jonathan Demme', 'TheManchurianCandidate2004coverphoto.jpg', ARRAY ['Drama', 'Mystery', 'Sci-Fi', 'Thriller'], 6.6, 'watched', 'Ryan');
+
+INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
+VALUES ('0120735', 'Lock, Stock and Two Smoking Barrels', 1998, 'Guy Ritchie', 'Lock,StockandTwoSmokingBarrels1998coverphoto.jpg', ARRAY ['Action', 'Comedy', 'Crime'], 8.1, 'watched', 'Justin');
+
+INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
+VALUES ('0120689', 'The Green Mile', 1999, 'Frank Darabont', 'TheGreenMile1999coverphoto.jpg', ARRAY ['Crime', 'Drama', 'Fantasy', 'Mystery'], 8.6, 'watched', 'Marcus');
+
+INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
+VALUES ('0088247', 'The Terminator', 1984, 'James Cameron', 'TheTerminator1984coverphoto.jpg', ARRAY ['Action', 'Adventure', 'Sci-Fi'], 8.1, 'watched', 'Ryan');
+
+INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
+VALUES ('0103064', 'Terminator 2: Judgment Day', 1991, 'James Cameron', 'Terminator2:JudgmentDay1991coverphoto.jpg', ARRAY ['Action', 'Adventure', 'Sci-Fi'], 8.6, 'watched', 'Ryan');
+
+INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
+VALUES ('0120815', 'Saving Private Ryan', 1998, 'Steven Spielberg', 'SavingPrivateRyan1998coverphoto.jpg', ARRAY ['Drama', 'War'], 8.6, 'watched', 'Marcus');
+
+INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
+VALUES ('0317248', 'City of God', 2002, 'Fernando Meirelles', 'CityofGod2002coverphoto.jpg', ARRAY ['Crime', 'Drama'], 8.6, 'watched', 'Marcus');
+
+INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
+VALUES ('0116282', 'Fargo', 1996, 'Joel Coen', 'Fargo1996coverphoto.jpg', ARRAY ['Crime', 'Thriller'], 8.1, 'watched', 'Marcus');
+
+INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
+VALUES ('5442430', 'Life', 2017, 'Daniel Espinosa', 'Life2017coverphoto.jpg', ARRAY ['Horror', 'Sci-Fi', 'Thriller'], 6.6, 'watched', 'Jon');
+
+INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)
+VALUES ('0117951', 'Trainspotting', 1996, 'Danny Boyle', 'Trainspotting1996coverphoto.jpg', ARRAY ['Drama'], 8.1, 'watched', 'Ryan');
 
 INSERT INTO comments(owner, movieid, text)
-VALUES ('Jon', '0114746', 'I love this movie.');
+VALUES ('Ryan', '0118971', 'This movie sucks!');
 
 INSERT INTO comments(owner, movieid, text)
-VALUES ('Justin', '0114746', 'This movie was fantastic. I really liked Keanu Reeves, but Al Pacino was a bit of a bore. Overall it was good.');
+VALUES ('Jon', '0118971', 'I love this movie.');
 
 INSERT INTO comments(owner, movieid, text)
-VALUES ('Marcus', '0114746', 'Jon you need to pick better movies.');
+VALUES ('Justin', '0118971', 'This movie was fantastic. I really liked Keanu Reeves, but Al Pacino was a bit of a bore. Overall it was good.');
+
+INSERT INTO comments(owner, movieid, text)
+VALUES ('Marcus', '0118971', 'Jon you need to pick better movies.');
 
 INSERT INTO ratings(reviewer, movieid, rating)
 VALUES ('Ryan', '0104348', 7.25);
@@ -134,18 +176,6 @@ INSERT INTO ratings(reviewer, movieid, rating)
 VALUES ('Jon', '0106977', 9);
 
 INSERT INTO ratings(reviewer, movieid, rating)
-VALUES ('Ryan', '0078748', 8);
-
-INSERT INTO ratings(reviewer, movieid, rating)
-VALUES ('Justin', '0078748', 7);
-
-INSERT INTO ratings(reviewer, movieid, rating)
-VALUES ('Marcus', '0078748', 8);
-
-INSERT INTO ratings(reviewer, movieid, rating)
-VALUES ('Jon', '0078748', 8);
-
-INSERT INTO ratings(reviewer, movieid, rating)
 VALUES ('Jon', '0469494', 8);
 
 INSERT INTO ratings(reviewer, movieid, rating)
@@ -180,3 +210,184 @@ VALUES ('Marcus', '8367814', 8);
 
 INSERT INTO ratings(reviewer, movieid, rating)
 VALUES ('Jon', '8367814', 9.25);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Jon', '1800241', 8.25);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Ryan', '1800241', 7.75);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Marcus', '1800241', 8);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '1800241', 8.25);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Ryan', '1234548', 6);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '1234548', 6);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Marcus', '1234548', NULL);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Jon', '1234548', NULL);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Ryan', '2316411', 6.5);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '2316411', 8);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Marcus', '2316411', 6);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Jon', '2316411', 7);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Ryan', '5109784', 5);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '5109784', 4);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Marcus', '5109784', 5);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Jon', '5109784', 6.5);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Ryan', '0368008', 9);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '0368008', NULL);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Marcus', '0368008', 9);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Jon', '0368008', 8);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Ryan', '0120735', 7.5);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '0120735', 7);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Marcus', '0120735', NULL);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Jon', '0120735', 7);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Ryan', '0120689', 8);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '0120689', NULL);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Marcus', '0120689', NULL);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Jon', '0120689', 8);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Ryan', '0088247', 7.5);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '0088247', 7.5);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Marcus', '0088247', 7.25);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Jon', '0088247', 7.5);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Ryan', '0103064', 8.25);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '0103064', 8);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Marcus', '0103064', 8);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Jon', '0103064', 8.1);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Ryan', '0120815', 8.25);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '0120815', 9);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Marcus', '0120815', 8.5);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Jon', '0120815', 8.3);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Ryan', '0078748', 8);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '0078748', NULL);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Marcus', '0078748', 8);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Jon', '0078748', 8);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Ryan', '0317248', 8);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '0317248', 7);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Marcus', '0317248', 7.25);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Jon', '0317248', NULL);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Ryan', '0116282', 7.25);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '0116282', 7.5);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Marcus', '0116282', 7.5);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Jon', '0116282', NULL);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Ryan', '5442430', 6.5);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '5442430', 7.5);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Marcus', '5442430', 6);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Jon', '5442430', 8.5);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Ryan', '0117951', 6.75);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Justin', '0117951', 4);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Marcus', '0117951', 6);
+
+INSERT INTO ratings(reviewer, movieid, rating)
+VALUES ('Jon', '0117951', NULL);
+

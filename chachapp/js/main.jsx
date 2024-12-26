@@ -4,14 +4,13 @@ import Header from './header';
 import Home from './home';
 import Login from './login';
 import AddMovie from './addmovie';
-import Downloads from './downloads';
 import Profile from './profile';
 import Reviewers from './reviewers';
 import MoviePage from './moviePage';
 import Statistics from './statistics';
 
-
-import { Route, Link, Redirect } from 'react-router-dom';
+import jwt_decode from "jwt-decode";
+import { Route, Redirect } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../static/css/style.css";
 
@@ -28,6 +27,7 @@ class Main extends React.Component{
         this.rerenderHeader = this.rerenderHeader.bind(this);
         this.rerenderHome = this.rerenderHome.bind(this);
         this.getNumInRotation = this.getNumInRotation.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
 
     }
 
@@ -39,6 +39,11 @@ class Main extends React.Component{
         this.setState({toggleHomeRerender: !this.state.toggleHomeRerender});
     }
 
+    handleLogout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        this.rerenderHome();
+    }
     getUsers(){
 
         var numInRotation = {};
@@ -89,37 +94,45 @@ class Main extends React.Component{
 
     render(){
         const tokenString = localStorage.getItem('token');
+        let currentDate = new Date();
+        let decodedToken = {};
+        let tokenValid = false;
+        if (tokenString !== null){
+            decodedToken = jwt_decode(tokenString);
+            console.log("Dedcoded Token", decodedToken);
+            if (tokenString && decodedToken.exp * 1000 < currentDate.getTime()) {
+                console.log("Token expired");
+                tokenValid = false;
+            } else {
+                console.log("Valid token");
+                tokenValid = true;
+            }
+        }
         const userToken = JSON.parse(tokenString);
         return(
             <div>
                 <Header toggleHeaderRerender={this.state.toggleHeaderRerender} 
-                rerenderHome={this.rerenderHome}/>
+                rerenderHome={this.rerenderHome} handleLogout={this.handleLogout}/>
                 <Route exact path="/watched/" render={(props) => (<Watched getNumInRotation={this.getNumInRotation}
                 numInRotation={this.state.numInRotation}/>)}/>
                 <Route exact path="/reviewers/" component={Reviewers}/>
                 <Route exact path="/statistics/" render={(props) => (<Statistics numInRotation={this.state.numInRotation}/>)}/>
                 <Route exact path="/addmovie/" render={() => (
-                    userToken ? (<AddMovie/>
-                    ) :(
-                        <Redirect to='/login/'/>
-                    )
-                )}/>
-                <Route exact path="/downloads/" render={() => (
-                    userToken ? (<Downloads/>
+                    tokenValid ? (<AddMovie/>
                     ) :(
                         <Redirect to='/login/'/>
                     )
                 )}/>
                 <Route exact path="/profile/" render={() => (
-                    userToken ? (<Profile/>
+                    tokenValid ? (<Profile/>
                     ) :(
                         <Redirect to='/login/'/>
                     )
                 )}/>
-                <Route exact path="/login/" render={(props) => (<Login rerenderHeader={this.rerenderHeader}/>)}/> 
+                <Route exact path="/login/" render={(props) => (<Login tokenValid={tokenValid} rerenderHeader={this.rerenderHeader}/>)}/> 
                 <Route exact path="/m/:movieid/" render={(props) => (<MoviePage {...props} getNumInRotation={this.getNumInRotation}
                  numInRotation={this.state.numInRotation}/>)}/> 
-                <Route exact path="/" render={(props) => (<Home getNumInRotation={this.getNumInRotation}
+                <Route exact path="/" render={(props) => (<Home {...props} getNumInRotation={this.getNumInRotation}
                 numInRotation={this.state.numInRotation} toggleHomeRerender={this.state.toggleHomeRerender}/>)}/>
                 <Route render={() => <Redirect to='/' />} />
             </div>

@@ -1,5 +1,6 @@
 click==7.1.2
 arrow==0.15.7
+datetime==4.4
 Flask==1.1.2
 Flask_jwt_extended==4.2.3
 gunicorn==20.1.0
@@ -7,7 +8,7 @@ itsdangerous==1.1.0
 python-dateutil==2.8.1
 six==1.15.0
 MarkupSafe==1.1.1
-imdbpy==2021.4.18
+cinemagoer==2023.5.1
 psycopg2-binary==2.8.6
 requests==2.25.
 Werkzeug==1.0.1

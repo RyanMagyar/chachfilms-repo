@@ -1,20 +1,23 @@
 from imdb import IMDb
+import sys
 import requests
 import shutil
 import os
-import chachapp
+# import chachapp
 import pathlib
-ia = IMDb()
+from imdb import Cinemagoer
+ia = Cinemagoer()
 
-movies = ia.search_movie('Glengarry Glen Ross')
+input = sys.argv[1]
+
+print(input)
+
+movies = ia.search_movie(input)
 
 movie = movies[0]
 #print(movies)
 #movie = ia.get_movie('0093773')
 
-print(movie['title'])
-print(movie['year'])
-print(movie.movieID)
 
 movie = ia.get_movie(movie.movieID)
 
@@ -25,6 +28,10 @@ print('Genres:')
 for genre in movie['genres']:
     print(genre)
 
+print(movie['imdbID'])
+print(movie['title'])
+print(movie['year'])
+print(movie['genres'])
 print('URL:')
 print(movie['full-size cover url'])
 print(movie['rating'])
@@ -41,4 +48,4 @@ if response.status_code == 200:
         shutil.copyfileobj(response.raw, out_file)
 
 print('INSERT INTO movies(movieid, title, year, director, filename, genres, imdbrating, state, suggestedby)')
-print('VALUES (\'', movie['imdbID'], '\', \'',  movie['title'], '\', ', movie['year'], ', \'', director['name'], '\', \'', filename, '\', ARRAY ', movie['genres'], ', ', movie['rating'], ', \'ondeck\'', ');', sep='')
+print('VALUES (\'', movie['imdbID'], '\', \'',  movie['title'], '\', ', movie['year'], ', \'', director['name'], '\', \'', filename, '\', ARRAY ', movie['genres'], ', ', movie['rating'], ', \'watched\'', ');', sep='')

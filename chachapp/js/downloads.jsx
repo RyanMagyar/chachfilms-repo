@@ -1,6 +1,4 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
-import { Redirect } from 'react-router';
 
 class Downloads extends React.Component {
   constructor(props) {
@@ -33,6 +31,8 @@ class Downloads extends React.Component {
     })
     .then((response) => {
         if (!response.ok) throw Error(response.statusText);
+        const res = response.data
+        res.access_token && localStorage.setItem('token', JSON.stringify(res.access_token));
         
         return response.json();
     })
@@ -74,7 +74,6 @@ class Downloads extends React.Component {
   }
 
   render() {
-    const { message } = this.state;
 
     return (
       <div className="downloadsWrapper">

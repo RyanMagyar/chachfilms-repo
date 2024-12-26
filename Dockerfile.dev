@@ -10,7 +10,7 @@ COPY webpack.common.js webpack.dev.js ./
 
 COPY ./chachapp/static/ ./chachapp/static/
 
-RUN npm ci .
+RUN npm ci . --legacy-peer-deps
 RUN npx webpack --config webpack.dev.js
 
 # Build API with static files

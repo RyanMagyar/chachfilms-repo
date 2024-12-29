@@ -73,7 +73,7 @@ class Comment extends React.Component {
                     <h5 className="commentUser">
                         {owner}
                     </h5>
-                    <h3 className="commentTimestamp"> Added {(moment(this.props.added).fromNow()).replace('in ', '')} ago</h3>
+                    <h3 className="commentTimestamp"> Added {(moment(this.props.added).fromNow()).replace('in ', '')}</h3>
                     {owner == this.state.user ? <Button variant="danger" className="deleteCommentButton" onClick={() => this.setState({ showDeleted: true })}>Delete</Button>
                         : ''}
                 </div>

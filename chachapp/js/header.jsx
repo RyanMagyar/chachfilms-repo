@@ -50,7 +50,6 @@ class Header extends React.Component {
         this.setState({ isLoggedIn: '', user: '', showLogout: false });
         this.props.handleLogout();
     }
-
     checkLoginToken(){
         const tokenString = localStorage.getItem('token');
         let currentDate = new Date();
@@ -58,12 +57,12 @@ class Header extends React.Component {
         let tokenValid = false;
         if (tokenString !== null){
             decodedToken = jwt_decode(tokenString);
-            console.log("Dedcoded Token", decodedToken);
+ //           console.log("Dedcoded Token", decodedToken);
             if (tokenString && decodedToken.exp * 1000 < currentDate.getTime()) {
-                console.log("CHECK: Token expired");
+ //               console.log("CHECK: Token expired");
                 tokenValid = false;
             } else {
-                console.log("CHECK: Valid token");
+ //               console.log("CHECK: Valid token");
                 tokenValid = true;
             }
         }
@@ -72,7 +71,7 @@ class Header extends React.Component {
     }
 
     render() {
-        console.log("HEADER RERENDER");
+        //console.log("HEADER RERENDER");
         return (
             <div>
                 <div className="header">

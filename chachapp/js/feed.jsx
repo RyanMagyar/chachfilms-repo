@@ -111,7 +111,7 @@ class Feed extends React.Component {
     componentDidMount() {
         const { url } = this.props;
 
-        console.log(url);
+        //console.log(url);
         fetch(url)
             .then((response) => {
                 if (!response.ok) throw Error(response.statusText);

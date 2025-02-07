@@ -2,6 +2,8 @@
 
 The inspiration for this project came from selecting, watching, and reviewing movies with a group of friends. We eventually formulated a system for selecting movies and then reviewing and keeping track of our scores. We started using a spreadsheet to track movies we watched and the ratings we gave them, but I eventually decided that this would make for a great interactive website and got to work.
 
+Check the site out at [chachfilms.com](https://chachfilms.com).
+
 # How It Works:
 
 This site was made for a group of friends and I to choose, track, and rate movies that we watched together. 

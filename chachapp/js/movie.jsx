@@ -72,7 +72,6 @@ class Movie extends React.Component {
         })
             .then((response) => {
                 if (!response.ok) {
-                    console.log("HERE");
                     throw Error(response.statusText);
                 } else {
                     this.setState({
@@ -85,8 +84,7 @@ class Movie extends React.Component {
                 }
             })
             .then((data) => {
-                console.log("DELETE");
-                console.log(data.access_token);
+                //console.log(data.access_token);
                 data.access_token && localStorage.setItem('token', JSON.stringify(data.access_token));
             })
             .catch((error) => console.log(error))

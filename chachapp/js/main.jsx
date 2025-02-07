@@ -99,12 +99,12 @@ class Main extends React.Component{
         let tokenValid = false;
         if (tokenString !== null){
             decodedToken = jwt_decode(tokenString);
-            console.log("Dedcoded Token", decodedToken);
+            //console.log("Dedcoded Token", decodedToken);
             if (tokenString && decodedToken.exp * 1000 < currentDate.getTime()) {
-                console.log("Token expired");
+             //   console.log("Token expired");
                 tokenValid = false;
             } else {
-                console.log("Valid token");
+              //  console.log("Valid token");
                 tokenValid = true;
             }
         }
